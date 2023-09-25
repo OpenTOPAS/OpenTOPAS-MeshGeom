@@ -1,0 +1,12 @@
+# Scorer: phantom in phantom
+s:Sc/PhantomInPhantom_brain/Quantity                  = "TsMRCPScorer"
+s:Sc/PhantomInPhantom_brain/Component                 = "MRCPPhantom"
+sv:Sc/PhantomInPhantom_brain/ICRPMaterials            = 1 "Brain" 
+s:Sc/PhantomInPhantom_brain/OutputFile                = "DosePhantomInPhantom_brain"
+s:Sc/PhantomInPhantom_brain/OutputType                = "csv"
+s:Sc/PhantomInPhantom_brain/IfOutputFileAlreadyExists = "Overwrite"
+sv:Sc/PhantomInPhantom_brain/Report                   = 2 "sum" "differentialvolumehistogram"
+i:Sc/PhantomInPhantom_brain/HistogramBins                   = 10000
+d:Sc/PhantomInPhantom_brain/HistogramMin                   = 1e-10 Gy
+d:Sc/PhantomInPhantom_brain/HistogramMax                   = 10 Gy
+sv:Sc/PhantomInPhantom_brain/OnlyIncludeIfParticleNotInVolume = 1 "CTSegment"

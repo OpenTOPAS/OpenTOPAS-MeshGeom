@@ -1,0 +1,9 @@
+/Debug/
+/.cproject
+/.project
+/.autotools
+/.DS_Store
+/phantoms/
+__pycache__/
+*.csv
+tags
