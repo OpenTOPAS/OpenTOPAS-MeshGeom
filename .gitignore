@@ -6,4 +6,5 @@
 /phantoms/
 __pycache__/
 *.csv
+*.swp
 tags

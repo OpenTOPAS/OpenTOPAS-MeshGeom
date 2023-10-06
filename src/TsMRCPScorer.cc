@@ -31,6 +31,14 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
 		}
 	}
 
+    // Get reference to MRCP paramterization. Assumes phantom name is hardcoded and that
+    // we have only one phantom in the geometry
+    G4String componentName = fPm->GetStringParameter(GetFullParmName("Component"));
+    G4String volumeName = componentName + "/WholePhantom";
+    TsVGeometryComponent* component = fGm->GetComponent(componentName);
+    G4VPhysicalVolume* physVol = component->GetPhysicalVolume(volumeName);
+    fmrcpParam = dynamic_cast<TsMRCPParameterization*>(physVol->GetParameterisation());
+
     // Current behavior is to always produce Absolute Differential DVH
     fReportAbsDVolHist = true;
 
@@ -80,14 +88,6 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
             fPm->AbortSession(1);
         }
     }
-
-    // Get reference to MRCP paramterization. Assumes phantom name is hardcoded and that
-    // we have only one phantom in the geometry
-    G4String componentName = fPm->GetStringParameter(GetFullParmName("Component"));
-    G4String volumeName = componentName + "/WholePhantom";
-    TsVGeometryComponent* component = fGm->GetComponent(componentName);
-    G4VPhysicalVolume* physVol = component->GetPhysicalVolume(volumeName);
-    fmrcpParam = dynamic_cast<TsMRCPParameterization*>(physVol->GetParameterisation());
 
     // // Test to check that the ids of the parameterisation match the IDs of fEvtMap/fFirstMomentMap
     // for (int i=0; i<10; i++){
@@ -272,9 +272,9 @@ void TsMRCPScorer::RestoreResultsFromFile()
 }
 
 void TsMRCPScorer::BuildMaterialMap(){
-    // Precompute a map over all ICRP materials for faster evaluation
-    std::vector<G4String> allMaterials = AllICRPMaterials();
-    for (auto &mat: allMaterials){
+    // Precompute a boolean map over all materials in materials file
+    std::vector<G4String> test = fmrcpParam->GetMaterialNames();
+    for (auto &mat: fmrcpParam->GetMaterialNames()){
         fMaterialMap[mat] = false;
         for (int i=0; i<fNmaterials; i++){
             if (mat == fICRPMaterials[i]){
@@ -388,224 +388,4 @@ void TsMRCPScorer::Output() {
     }
 
     G4cout << "End of TsMRCPScorer output for Scorer: " << GetName() << G4endl;
-}
-
-
-std::vector<G4String> TsMRCPScorer::AllICRPMaterials(){
-    return {
-"Adrenal_left",
-"Adrenal_right",
-"ET1(0-8)",
-"ET1(8-40)",
-"ET1(40-50)",
-"ET1(50-Surface)",
-"ET2(-15-0)",
-"ET2(0-40)",
-"ET2(40-50)",
-"ET2(50-55)",
-"ET2(55-65)",
-"ET2(65-Surface)",
-"Oral_mucosa_tongue",
-"Oral_mucosa_moth_floor",
-"Oral_mucosa_lips_and_cheeks",
-"Trachea",
-"BB(-11--6)",
-"BB(-6-0)",
-"BB(0-10)",
-"BB(10-35)",
-"BB(35-40)",
-"BB(40-50)",
-"BB(50-60)",
-"BB(60-70)",
-"BB(70-surface)",
-"Blood_in_large_arteries_head",
-"Blood_in_large_veins_head",
-"Blood_in_large_arteries_trunk",
-"Blood_in_large_veins_trunk",
-"Blood_in_large_arteries_arms",
-"Blood_in_large_veins_arms",
-"Blood_in_large_arteries_legs",
-"Blood_in_large_veins_legs",
-"Humeri_upper_cortical",
-"Humeri_upper_spogiosa",
-"Humeri_upper_medullary_cavity",
-"Humeri_lower_cortical",
-"Humeri_lower_spongiosa",
-"Humeri_lower_medullary_cavity",
-"Radii_cortical",
-"Ulnae_cortical",
-"Radii_spongiosa",
-"Ulnae_spongiosa",
-"Radii_medullary_cavity",
-"Ulnae_medullary_cavity",
-"Wrists_and_hand_bones_cortical",
-"Wrists_and_hand_bones_spongiosa",
-"Clavicles_cortical",
-"Clavicles_spongiosa",
-"Cranium_cortical",
-"Cranium_spongiosa",
-"Femora_upper_cortical",
-"Femora_upper_spongiosa",
-"Femora_upper_medullary_cavity",
-"Femora_lower_cortical",
-"Femora_lower_spongiosa",
-"Femora_lower_medullary_cavity",
-"Tibiae_cortical",
-"Fibulae_cortical",
-"Patellae_cortical",
-"Tibiae_spongiosa",
-"Fibulae_spongiosa",
-"Patellae_spongiosa",
-"Tibiae_medullary_cavity",
-"Fibulae_medullary_cavity",
-"Ankles_and_foot_cortical",
-"Ankles_and_foot_spongiosa",
-"Mandible_cortical",
-"Mandible_spongiosa",
-"Pelvis_cortical",
-"Pelvis_spongiosa",
-"Ribs_cortical",
-"Ribs_spongiosa",
-"Scapulae_cortical",
-"Scapulae_spongiosa",
-"Cervical_spine_cortical",
-"Cervical_spine_spongiosa",
-"Thoracic_spine_cortical",
-"Thoracic_spine_spongiosa",
-"Lumbar_spine_cortical",
-"Lumbar_spine_spongiosa",
-"Sacrum_cortical",
-"Sacrum_spongiosa",
-"Sternum_cortical",
-"Sternum_spongiosa",
-"Cartilage_trunk",
-"Brain",
-"Breast_left_adipose_tissue",
-"Breast_left_glandular_tissue",
-"Breast_right_adipose_tissue",
-"Breast_right_glandular_tissue",
-"Eye_lens_sensitive_left",
-"Eye_lens_insensitive_left",
-"Cornea_left",
-"Aqueous_left",
-"Vitreous_left",
-"Eye_lens_sensitive_right",
-"Eye_lens_insensitive_right",
-"Cornea_right",
-"Aqueous_right",
-"Vitreous_right",
-"Gall_bladder_wall",
-"Gall_bladder_contents",
-"Stomach_wall(0-60)",
-"Stomach_wall(60-100)",
-"Stomach_wall(100-300)",
-"Stomach_wall(300-surface)",
-"Stomach_contents",
-"Small_intestine_wall(0-130)",
-"Small_intestine_wall(130-150)",
-"Small_intestine_wall(150-200)",
-"Small_intestine_wall(200-surface)",
-"Small_intestine_contents(-400-0)",
-"Small_intestine_contents(centre--400)",
-"Ascending_colon_wall(0-280)",
-"Ascending_colon_wall(280-300)",
-"Ascending_colon_wall(300-surface)",
-"Ascending_colon_content",
-"Transverse_colon_wall_right(0-280)",
-"Transverse_colon_wall_right(280-300)",
-"Transverse_colon_wall_right(300-surface)",
-"Transverse_colon_contents_right",
-"Transverse_colon_wall_left(0-280)",
-"Transverse_colon_wall_left(280-300)",
-"Transverse_colon_wall_left(300-surface)",
-"Transverse_colon_content_left",
-"Descending_colon_wall(0-280)",
-"Descending_colon_wall(280-300)",
-"Descending_colon_wall(300-surface)",
-"Descending_colon_content",
-"Sigmoid_colon_wall(0-280)",
-"Sigmoid_colon_wall(280-300)",
-"Sigmoid_colon_wall(300-surface)",
-"Sigmoid_colon_contents",
-"Rectum_wall(0-280)",
-"Rectum_wall(280-300)",
-"Rectum_wall(300-surface)",
-"Rectum_contents",
-"Heart_wall",
-"Blood_in_heart_chamber",
-"Kidney_left_cortex",
-"Kidney_left_medulla",
-"Kidney_left_pelvis",
-"Kidney_right_cortex",
-"Kidney_right_medulla",
-"Kidney_right_pelvis",
-"Liver",
-"Lung(AI)_left",
-"Lung(AI)_right",
-"Lymphatic_nodes_ET",
-"Lymphatic_nodes_thoracic",
-"Lymphatic_nodes_head",
-"Lymphatic_nodes_trunk",
-"Lymphatic_nodes_arms",
-"Lymphatic_nodes_legs",
-"Muscle_head",
-"Muscle_trunk",
-"Muscle_arms",
-"Muscle_legs",
-"Oesophagus_wall(0-190)",
-"Oesophagus_wall(190-200)",
-"Oesophagus_wall(200-surface)",
-"Oesophagus_contents",
-"Pancreas",
-"Pituitary_gland",
-"Prostate",
-"RST_head",
-"RST_trunk",
-"RST_arms",
-"RST_legs",
-"Salivary_glands_left",
-"Salivary_glandss_right",
-"Skin_head_insensitive",
-"Skin_head_sensitive(40-100)",
-"Skin_trunk_insensitive",
-"Skin_trunk_sensitive(40-100)",
-"Skin_arms_insensitive",
-"Skin_arms_sensitive(40-100)",
-"Skin_legs_insensitive",
-"Skin_legs_sensitive(40-100)",
-"Spinal_cord",
-"Spleen",
-"Teeth",
-"Teeth_retention_region",
-"Testis_left",
-"Testis_right",
-"Thymus",
-"Thyroid",
-"Tongue_upper(food)",
-"Tongue_lower",
-"Tonsils",
-"Ureter_left",
-"Ureter_right",
-"Urinary_bladder_wall_insensitive",
-"Urinary_bladder_wall_sensitive(86-193)",
-"Urinary_bladder_content",
-"Air_inside_body",
-"nOvary_left",
-"Ovary_right",
-"Uterus",
-"Small_intestine_contents(-500-0)",
-"Small_intestine_contents(centre--500)",
-"Urinary_bladder_wall_sensitive(99-212)",
-"Cartilage_head",
-"Urinary_bladder_wall_sensitive(71-238)",
-"Skin_head_sensitive(50-100)",
-"Skin_trunk_sensitive(50-100)",
-"Skin_arms_sensitive(50-100)",
-"Skin_legs_sensitive(50-100)",
-"Urinary_bladder_wall_sensitive(116-238)",
-"Urinary_bladder_wall_sensitive(111-227)",
-"Cartilage_arms",
-"Cartilage_legs",
-"Urinary_bladder_wall_sensitive(54-232)",
-};
 }

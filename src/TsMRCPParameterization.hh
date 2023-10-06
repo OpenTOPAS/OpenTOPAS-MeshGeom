@@ -17,7 +17,8 @@ public:
     G4Material* ComputeMaterial(const G4int copyNo);
     G4int       GetNumTetrahedron();
     G4Tet*      GetTetrahedron(const G4int copyNo);
-    G4double      GetVolumeOfTet(const G4int copyNo);
+    G4double    GetVolumeOfTet(const G4int copyNo);
+    std::vector<G4String>  GetMaterialNames();
 
 private:
 	TsTETModelImport* fTetData = NULL;
