@@ -1,5 +1,13 @@
 # Tetrahedral Mesh Geometry Capabilities for TOPAS
+
+<p align="center">
+  <a href="https://github.com/mghro/TOPAS-MeshGeom"><img alt="Adult Female ICRP 145 mesh head" src="https://github.com/mghro/TOPAS-MeshGeom/assets/34250777/18f99b31-6d5e-4f20-bf08-f3111a0a99f6" width="40%"></a>
+  <p align="center"></p>
+</p>
+
 Largely based on the [Geant4 example](https://github.com/Geant4/geant4/tree/dd1f179cda58f54140945ad67846ff417903a862/examples/advanced/ICRP145_HumanPhantoms) using the ICRP 145 phantoms 
+
+
 
 Authors:
  - [Isaac Meyer](imeyer@mgh.harvard.edu)
