@@ -88,14 +88,14 @@ G4VPhysicalVolume* TsMRCP::Construct()
 	BeginConstruction();
 
 
-	// Define the phantom container (5-cm margins from the edges of the phantom using max in each dimension)
+	// Define the phantom container (buffer of 10% of the absolute max in each dimension)
     G4double xAbsMax = max(abs(fPhantomBoxMin.x()), abs(fPhantomBoxMax.x()));
     G4double yAbsMax = max(abs(fPhantomBoxMin.y()), abs(fPhantomBoxMax.y()));
     G4double zAbsMax = max(abs(fPhantomBoxMin.z()), abs(fPhantomBoxMax.z()));
 
-	G4double totalHLX = xAbsMax + 5.*cm;
-	G4double totalHLY = yAbsMax + 5.*cm;
-	G4double totalHLZ = zAbsMax + 5.*cm;
+	G4double totalHLX = xAbsMax + 0.1*xAbsMax;
+	G4double totalHLY = yAbsMax + 0.1*yAbsMax;
+	G4double totalHLZ = zAbsMax + 0.1*zAbsMax;
 
 	G4Box* envelopeSolid = new G4Box(fName, totalHLX, totalHLY, totalHLZ);
     // Set envelop material to reduce number of warnings
