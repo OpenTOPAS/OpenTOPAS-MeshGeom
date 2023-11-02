@@ -18,6 +18,7 @@ public:
     G4int       GetNumTetrahedron();
     G4Tet*      GetTetrahedron(const G4int copyNo);
     G4double    GetVolumeOfTet(const G4int copyNo);
+    G4String    GetMaterialAtPoint(const G4ThreeVector);
     std::vector<G4String>  GetMaterialNames();
 
 private:

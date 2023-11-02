@@ -87,7 +87,6 @@ G4VPhysicalVolume* TsMRCP::Construct()
 {
 	BeginConstruction();
 
-
 	// Define the phantom container (buffer of 10% of the absolute max in each dimension)
     G4double xAbsMax = max(abs(fPhantomBoxMin.x()), abs(fPhantomBoxMax.x()));
     G4double yAbsMax = max(abs(fPhantomBoxMin.y()), abs(fPhantomBoxMax.y()));
