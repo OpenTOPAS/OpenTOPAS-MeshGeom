@@ -180,6 +180,7 @@ void TsTETModelImport::MaterialRead(G4String materialFile)
 		G4int matID = std::atoi(token);
 		materialIndex.push_back(matID);
 		organNameMap[matID] = materialName;
+        organNameToMatID[materialName] = matID;
 		densityMap[matID] = density*g/cm3;
 
 		for (G4int i = 0; ; i++)
@@ -291,4 +292,8 @@ void TsTETModelImport::PrintMaterialInformation()
 			   << std::setw(11) << materialExtentMap[idx].second.z()/cm
 			   << "\t"<<materialMap[idx]->GetName() << G4endl; // organ name
 	}
+}
+
+std::pair<G4ThreeVector, G4ThreeVector> TsTETModelImport::GetMaterialExtent(const G4String material) {
+    return materialExtentMap[organNameToMatID[material]];
 }

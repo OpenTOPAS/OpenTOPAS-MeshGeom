@@ -1,8 +1,13 @@
 // Extra Class for TsMRCP
 #include "TsMRCPParameterization.hh"
+#include "G4TransportationManager.hh"
+
 
 TsMRCPParameterization::TsMRCPParameterization(TsTETModelImport* tetData)
-	: G4VPVParameterisation(), fTetData(tetData) { }
+	: G4VPVParameterisation(), fTetData(tetData) {
+    // Navigator is used to query the material at a given x, y, z location
+    fNavigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+}
 
 TsMRCPParameterization::~TsMRCPParameterization() {}
 
@@ -33,6 +38,15 @@ G4Tet* TsMRCPParameterization::GetTetrahedron(const G4int copyNo){
 
 G4double TsMRCPParameterization::GetVolumeOfTet(const G4int copyNo){
     return fTetData->GetVolumeOfTet(copyNo);
+}
+
+std::pair<G4ThreeVector, G4ThreeVector> TsMRCPParameterization::GetMaterialExtent(const G4String material){
+    return fTetData->GetMaterialExtent(material);
+}
+
+const G4String TsMRCPParameterization::GetMaterialAtPoint(const G4ThreeVector point){
+    G4VPhysicalVolume* volume = fNavigator->LocateGlobalPointAndSetup(point);
+    return volume->GetLogicalVolume()->GetMaterial()->GetName();
 }
 
 std::vector<G4String> TsMRCPParameterization::GetMaterialNames(){

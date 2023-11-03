@@ -1,9 +1,11 @@
 #ifndef TsMRCPParameterization_hh
 #define TsMRCPParameterization_hh
 
+#include "TsTETModelImport.hh"
+
 #include "G4VPVParameterisation.hh"
 #include "G4Tet.hh"
-#include "TsTETModelImport.hh"
+#include "G4Navigator.hh"
 
 class TsMRCPParameterization : public G4VPVParameterisation
 {
@@ -18,11 +20,13 @@ public:
     G4int       GetNumTetrahedron();
     G4Tet*      GetTetrahedron(const G4int copyNo);
     G4double    GetVolumeOfTet(const G4int copyNo);
-    G4String    GetMaterialAtPoint(const G4ThreeVector);
+    std::pair<G4ThreeVector, G4ThreeVector> GetMaterialExtent(const G4String material);
+    const G4String GetMaterialAtPoint(const G4ThreeVector point);
     std::vector<G4String>  GetMaterialNames();
 
 private:
 	TsTETModelImport* fTetData = NULL;
+    G4Navigator* fNavigator;
 };
 
 #endif

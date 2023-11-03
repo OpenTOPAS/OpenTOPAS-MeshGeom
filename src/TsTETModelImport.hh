@@ -28,10 +28,12 @@ public:
 	G4ThreeVector	GetPhantomSize()			{ return phantomSize; }
 	G4ThreeVector	GetPhantomBoxMin()			{ return boundingBoxMin; }
 	G4ThreeVector	GetPhantomBoxMax()			{ return boundingBoxMax; }
-	void PrintMaterialInformation();
-
 	std::map<G4int, G4Material*>	GetMaterialMap()	{ return materialMap; }
 	std::map<G4int, G4String>		GetOrganNameMap() 	{ return organNameMap; }
+
+    std::pair<G4ThreeVector, G4ThreeVector>	GetMaterialExtent(const G4String material);
+	void PrintMaterialInformation();
+
 
 private:
 	// Private methods
@@ -61,6 +63,7 @@ private:
 	std::map<G4int, G4Material*>								materialMap;
 	std::map<G4int, G4double>									densityMap;
 	std::map<G4int, G4String>									organNameMap;
+	std::map<G4String, G4int>									organNameToMatID;
 };
 
 #endif
