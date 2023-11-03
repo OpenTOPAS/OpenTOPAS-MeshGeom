@@ -7,15 +7,15 @@ TsTETModelImport::TsTETModelImport(G4String path, G4String phantomName)
     G4String eleFile = phantomName + ".ele";
     G4String nodeFile = phantomName + ".node";
     G4String materialFile = phantomName + ".material";
-    DataRead(eleFile, nodeFile);
     MaterialRead(materialFile);
+    DataRead(eleFile, nodeFile);
 }
 
 TsTETModelImport::TsTETModelImport(G4String path, G4String nodeFile, G4String materialFile, G4String eleFile)
 {
     phantomDataPath = path;
-    DataRead(eleFile, nodeFile);
     MaterialRead(materialFile);
+    DataRead(eleFile, nodeFile);
 }
 
 TsTETModelImport::~TsTETModelImport() {}
@@ -86,6 +86,7 @@ void TsTETModelImport::DataRead(G4String eleFile, G4String nodeFile)
 	G4int numEle;
 	ifpEle >> numEle >> tempInt >> tempInt;
 
+    G4ThreeVector *minVec, *maxVec, *curPos;
 	for (G4int i = 0; i < numEle; i++)
 	{
 		ifpEle >> tempInt;
@@ -114,8 +115,35 @@ void TsTETModelImport::DataRead(G4String eleFile, G4String nodeFile)
 			volumeMap[materialVector[i]] = tetVector[i]->GetCubicVolume();
 			numTetMap[materialVector[i]] = 1;
 		}
+
+        // Update extent by looping over all vertices of each tet
+        minVec = &(materialExtentMap[materialVector[i]].first);
+        maxVec = &(materialExtentMap[materialVector[i]].second);
+        for (G4int j=0; j<4; j++){
+            curPos = &(vertexVector[ele[j]]);
+            // G4cout << "Min: " << minVec->x() << " " << minVec->y() << " " << minVec->z() << G4endl;
+            // G4cout << "Max: " << maxVec->x() << " " << maxVec->y() << " " << maxVec->z() << G4endl;
+            // G4cout << "curPos: " << curPos->x() << " " << curPos->y() << " " << curPos->z() << G4endl;
+            if (curPos->x() < minVec->x()) minVec->setX(curPos->x());
+            if (curPos->x() > maxVec->x()) maxVec->setX(curPos->x());
+            if (curPos->y() < minVec->y()) minVec->setY(curPos->y());
+            if (curPos->y() > maxVec->y()) maxVec->setY(curPos->y());
+            if (curPos->z() < minVec->z()) minVec->setZ(curPos->z());
+            if (curPos->z() > maxVec->z()) maxVec->setZ(curPos->z());
+        }
 	}
 	ifpEle.close();
+
+    // Check that all materials from .ele file were defined in .material file
+    for (G4int i = 0; i < (G4int)materialVector.size(); i++)
+    {
+        G4int idx = materialVector[i];
+        if (!materialMap.count(idx)) {
+            std::ostringstream oss;
+            oss << "Material file did not define material number:" << idx << " found in .ele file";
+            G4Exception("TsTETModelImport::DataRead", "", FatalErrorInArgument, G4String(oss.str()).c_str());
+        }
+    }
 }
 
 void TsTETModelImport::MaterialRead(G4String materialFile)
@@ -180,15 +208,12 @@ void TsTETModelImport::MaterialRead(G4String materialFile)
 		massMap[idx] = densityMap[idx] * volumeMap[idx];
 	}
 
-    // Check that all materials from .ele file were defined in .material file
-    for (G4int i = 0; i < (G4int)materialVector.size(); i++)
-    {
-        G4int idx = materialVector[i];
-        if (!materialMap.count(idx)) {
-            std::ostringstream oss;
-            oss << "Material file did not define material number:" << idx << " found in .ele file";
-            G4Exception("TsTETModelImport::DataRead", "", FatalErrorInArgument, G4String(oss.str()).c_str());
-        }
+    // Initialize material extent map
+	for (G4int i = 0; i < (G4int)materialIndex.size(); i++)
+	{
+		G4int idx = materialIndex[i];
+        materialExtentMap[idx].first  = G4ThreeVector(DBL_MAX, DBL_MAX, DBL_MAX);
+        materialExtentMap[idx].second = G4ThreeVector(DBL_MIN, DBL_MIN, DBL_MIN);
     }
 }
 
@@ -237,6 +262,33 @@ void TsTETModelImport::PrintMaterialInformation()
 			   << std::setw(11) << volumeMap[idx]/cm3          // organ volume
 			   << std::setw(11) << materialMap[idx]->GetDensity()/(g/cm3)      // organ density
 			   << std::setw(11) << massMap[idx]/g              // organ mass
+			   << "\t"<<materialMap[idx]->GetName() << G4endl; // organ name
+	}
+
+	// Print the extent of each organ 
+	G4cout << G4endl
+		   << std::setw(9)	<< "Organ ID"
+		   << std::setw(11)	<< "Min X"
+		   << std::setw(11)	<< "Min Y"
+		   << std::setw(11)	<< "Min Z"
+		   << std::setw(11)	<< "Max X"
+		   << std::setw(11)	<< "Max Y"
+		   << std::setw(11)	<< "Max Z"
+		   << "\t" << "organ/tissue" << G4endl;
+	G4cout << "-----------------------------------" << G4endl;
+
+	G4cout << std::setiosflags(std::ios::fixed);
+	G4cout.precision(3);
+	for (matIter = materialMap.begin(); matIter != materialMap.end(); matIter++)
+	{
+		G4int idx = matIter->first;
+		G4cout << std::setw(9)  << idx                         // organ ID
+			   << std::setw(11) << materialExtentMap[idx].first.x()/cm
+			   << std::setw(11) << materialExtentMap[idx].first.y()/cm
+			   << std::setw(11) << materialExtentMap[idx].first.z()/cm
+			   << std::setw(11) << materialExtentMap[idx].second.x()/cm
+			   << std::setw(11) << materialExtentMap[idx].second.y()/cm
+			   << std::setw(11) << materialExtentMap[idx].second.z()/cm
 			   << "\t"<<materialMap[idx]->GetName() << G4endl; // organ name
 	}
 }

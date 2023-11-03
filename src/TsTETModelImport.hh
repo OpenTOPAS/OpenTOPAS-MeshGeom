@@ -54,6 +54,7 @@ private:
 	std::map<G4int, G4double>	volumeMap;
 	std::map<G4int, G4double>	massMap;
 	std::map<G4int, G4Colour>	colorMap;
+    std::map<G4int, std::pair<G4ThreeVector, G4ThreeVector>> materialExtentMap;
 
 	std::map<G4int, std::vector<std::pair<G4int, G4double>>>	materialIndexMap;
 	std::vector<G4int>											materialIndex;
