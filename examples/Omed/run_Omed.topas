@@ -1,0 +1,86 @@
+d:Ge/World/HLX                          = 1.5 m
+d:Ge/World/HLY                          = 1.5 m
+d:Ge/World/HLZ                          = 1.5 m
+b:Ge/World/Invisible                    = "true"
+s:Ge/World/Material                     = "G4_Galactic"
+
+# Parallel World set up
+sv:Ph/Default/LayeredMassGeometryWorlds = 2 "Scoring" "MeshWorld"
+sv:Ph/Default/Modules                   = 1 "g4em-standard_opt3"
+
+s:Ge/MeshWorld/Parent     = "World"
+b:Ge/MeshWorld/IsParallel = "True"
+s:Ge/MeshWorld/Type       = "Group"
+
+# Materials should be set by material file
+s:Ge/MeshGeometry/Type             = "TsMRCP"
+s:Ge/MeshGeometry/Parent           = "MeshWorld"
+b:Ge/MeshGeometry/IsParallel       = "True"
+s:Ge/MeshGeometry/PhantomDirectory = "/Users/isaacmeyer/topas_extensions/TOPAS-MeshGeom/examples/Omed"
+s:Ge/MeshGeometry/NodeFile         = "Omed.node"
+s:Ge/MeshGeometry/MaterialFile     = "Omed.material"
+s:Ge/MeshGeometry/EleFile          = "Omed.ele"
+d:Ge/MeshGeometry/TransX           = 0 cm
+d:Ge/MeshGeometry/TransY           = 0 cm
+d:Ge/MeshGeometry/TransZ           = 0 cm
+d:Ge/MeshGeometry/RotX             = 0. deg
+d:Ge/MeshGeometry/RotY             = 0. deg
+d:Ge/MeshGeometry/RotZ             = 0. deg
+
+s:Ge/Scoring/Parent     = "World"
+s:Ge/Scoring/Type       = "TsBox"
+b:Ge/Scoring/IsParallel = "True"
+s:Ge/Scoring/Material   = "G4_Galactic"
+d:Ge/Scoring/HLX        = 60 cm
+d:Ge/Scoring/HLY        = 90 cm
+d:Ge/Scoring/HLZ        = 30 cm
+i:Ge/Scoring/XBins      = 120
+i:Ge/Scoring/YBins      = 100
+i:Ge/Scoring/ZBins      = 100
+
+# Colors
+# iv:Gr/Color/transparentred = 4 255 0 0 10
+# ivc:Gr/Color/transparentblue = 4 0 0 255 50
+# # Color of Phantom (component name is hardcoded)
+# s:Ge/MeshGeometry/TetLogic/Color  = "transparentred"
+
+# Axes position
+s:Ge/AxesPosition/Parent = "World"
+s:Ge/AxesPosition/Type   = "Group"
+d:Ge/AxesPosition/TransX = -80 cm
+d:Ge/AxesPosition/TransY = 0. m
+d:Ge/AxesPosition/TransZ = 0 cm
+
+# Source
+s:Ge/SourcePosition/Parent = "World"
+s:Ge/SourcePosition/Type   = "Group"
+d:Ge/SourcePosition/TransX = 0. m
+d:Ge/SourcePosition/TransY = 0. m
+d:Ge/SourcePosition/TransZ = 100 cm
+
+s:So/Proton/Type                     = "Beam"
+s:So/Proton/Component                = "SourcePosition"
+s:So/Proton/BeamParticle             = "proton"
+s:So/Proton/BeamPositionDistribution = "Flat" # None, Flat or Gaussian
+s:So/Proton/BeamPositionCutoffShape  = "Rectangle" # Rectangle or Ellipse (if Flat or Gaussian)
+d:So/Proton/BeamPositionCutoffX      = 10 cm # X extent of position (if Flat or Gaussian)
+d:So/Proton/BeamPositionCutoffY      = 10 cm # Y extent of position (if Flat or Gaussian)
+d:So/Proton/BeamEnergy               = 100 MeV
+s:So/Proton/BeamAngularDistribution  = "None" # None, Flat or Gaussian
+
+# Settings
+#                                       1234567890
+ic:So/Proton/NumberOfHistoriesInRun  = 100
+i:Ts/ShowHistoryCountAtInterval      = 10
+i:Ts/NumberOfThreads                 = 12
+b:Ts/ShowCPUTime                     = "True"
+i:Ts/ParameterizationErrorMaxReports = 5
+i:Ts/IndexErrorMaxReports            = 5
+
+b:Gr/ViewA/IncludeAxes   = "True"
+d:Gr/ViewA/AxesSize      = 20 cm
+d:Gr/ViewA/Theta         = 30 deg
+d:Gr/ViewA/Phi           = 20 deg
+s:Gr/ViewA/AxesComponent = "AxesPosition"
+s:Gr/ViewA/Type          = "OpenGL"
+b:Ts/UseQt               = "True"
