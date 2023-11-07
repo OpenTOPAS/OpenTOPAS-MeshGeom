@@ -5,6 +5,7 @@
 
 #include "G4VPVParameterisation.hh"
 #include "G4Tet.hh"
+
 #include "G4Navigator.hh"
 
 class TsMRCPParameterization : public G4VPVParameterisation
@@ -12,6 +13,7 @@ class TsMRCPParameterization : public G4VPVParameterisation
 public:
 	TsMRCPParameterization(TsTETModelImport* tetData);
 	virtual ~TsMRCPParameterization();
+    void InitializeNavigator(const G4String world);
 
 	G4VSolid* ComputeSolid(const G4int copyNo, G4VPhysicalVolume* );
 	void ComputeTransformation(const G4int, G4VPhysicalVolume*) const;
@@ -21,8 +23,8 @@ public:
     G4Tet*      GetTetrahedron(const G4int copyNo);
     G4double    GetVolumeOfTet(const G4int copyNo);
     std::pair<G4ThreeVector, G4ThreeVector> GetMaterialExtent(const G4String material);
-    const G4String GetMaterialAtPoint(const G4ThreeVector point);
     std::vector<G4String>  GetMaterialNames();
+    G4String GetMaterialAtPoint(const G4ThreeVector point);
 
 private:
 	TsTETModelImport* fTetData = NULL;

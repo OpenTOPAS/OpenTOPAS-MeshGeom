@@ -4,6 +4,7 @@
 #include "TsVGeometryComponent.hh"
 #include "TsTETModelImport.hh"
 
+
 class TsMRCP : public TsVGeometryComponent
 {
 public:
@@ -24,7 +25,8 @@ private:
 	G4String fMaterialFile;
 	G4String fEleFile;
 
-	TsTETModelImport* fTetData;
+    TsTETModelImport* fTetData;
+    TsMRCPParameterization* fMRCPParam;
 	G4ThreeVector fPhantomSize;
 	G4ThreeVector fPhantomBoxMin, fPhantomBoxMax;
 	G4int fNOfTetrahedrons;

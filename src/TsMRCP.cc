@@ -113,10 +113,15 @@ G4VPhysicalVolume* TsMRCP::Construct()
 	G4LogicalVolume* tetLogic = CreateLogicalVolume("TetLogic", material, tetraSolid);
 
 	// Physical volume (phantom) constructed as parameterized geometry
-	G4VPhysicalVolume* phantom = CreatePhysicalVolume("WholePhantom", tetLogic, fEnvelopePhys, kUndefined, fNOfTetrahedrons, new TsMRCPParameterization(fTetData));
+    TsMRCPParameterization* fMRCPParam = new TsMRCPParameterization(fTetData);
+	G4VPhysicalVolume* phantom = CreatePhysicalVolume("WholePhantom", tetLogic, fEnvelopePhys, kUndefined, fNOfTetrahedrons, fMRCPParam);
 
 	InstantiateChildren();
     PrintPhantomInformation();
+
+    // Initialize navigator in TsMRCPParameterization for querying material at a point
+    fMRCPParam->InitializeNavigator(this->GetWorldName());
+
 	return fEnvelopePhys;
 }
 
