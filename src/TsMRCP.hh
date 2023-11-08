@@ -3,6 +3,7 @@
 
 #include "TsVGeometryComponent.hh"
 #include "TsTETModelImport.hh"
+#include "TsMRCPParameterization.hh"
 
 
 class TsMRCP : public TsVGeometryComponent
