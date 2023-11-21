@@ -14,8 +14,8 @@ s:Ge/MeshWorld/Type       = "Group"
 
 # Materials should be set by material file
 s:Ge/MeshGeometry/Type             = "TsMRCP"
-s:Ge/MeshGeometry/Parent           = "MeshWorld"
-b:Ge/MeshGeometry/IsParallel       = "True"
+s:Ge/MeshGeometry/Parent           = "World"
+# b:Ge/MeshGeometry/IsParallel       = "True"
 s:Ge/MeshGeometry/PhantomDirectory = "/Users/isaacmeyer/topas_extensions/TOPAS-MeshGeom/examples/Omed"
 s:Ge/MeshGeometry/NodeFile         = "Omed.node"
 s:Ge/MeshGeometry/MaterialFile     = "Omed.material"
@@ -26,6 +26,11 @@ d:Ge/MeshGeometry/TransZ           = 0 cm
 d:Ge/MeshGeometry/RotX             = 0. deg
 d:Ge/MeshGeometry/RotY             = 0. deg
 d:Ge/MeshGeometry/RotZ             = 0. deg
+iv:Gr/Color/transparentred = 4 255 0 0 50
+iv:Gr/Color/transparentblue = 4 0 0 255 50
+s:Ge/MeshGeometry/TetLogic/Color  = "transparentred"
+sc:Ge/MeshGeometry/TetLogic/DrawingStyle  = "solid"
+b:Ge/MeshGeometry/MeshGeometry/Invisible  = "True"
 
 s:Ge/Scoring/Parent     = "World"
 s:Ge/Scoring/Type       = "TsBox"
@@ -37,6 +42,7 @@ d:Ge/Scoring/HLZ        = 30 cm
 i:Ge/Scoring/XBins      = 120
 i:Ge/Scoring/YBins      = 100
 i:Ge/Scoring/ZBins      = 100
+b:Ge/Scoring/Invisible   = "True"
 
 # Colors
 # iv:Gr/Color/transparentred = 4 255 0 0 10
@@ -77,10 +83,21 @@ b:Ts/ShowCPUTime                     = "True"
 i:Ts/ParameterizationErrorMaxReports = 5
 i:Ts/IndexErrorMaxReports            = 5
 
+# # s:Gr/CT4/Type = "VRML"
+# s:Gr/CT4/Type = "RayTracer"
+# i:Gr/CT4/WindowSizeX = 2000
+# i:Gr/CT4/WindowSizeY = 2000
+# d:Gr/CT4/Theta         = 54 deg
+# d:Gr/CT4/Phi           = -45 deg
+# uv:Gr/CT4/UpVector     = 3 0. 0. 1.
+# b:Gr/CT4/Enable = "True"
+# i:Gr/ShowOnlyOutlineIfVoxelCountExceeds = 2147483646
+  
 b:Gr/ViewA/IncludeAxes   = "True"
 d:Gr/ViewA/AxesSize      = 20 cm
-d:Gr/ViewA/Theta         = 30 deg
-d:Gr/ViewA/Phi           = 20 deg
+d:Gr/ViewA/Theta         = 54.74 deg
+d:Gr/ViewA/Phi           = -45 deg
 s:Gr/ViewA/AxesComponent = "AxesPosition"
 s:Gr/ViewA/Type          = "OpenGL"
+uv:Gr/ViewA/UpVector     = 3 0. 0. 1.
 b:Ts/UseQt               = "True"
