@@ -5,50 +5,58 @@ b:Ge/World/Invisible                    = "true"
 s:Ge/World/Material                     = "G4_Galactic"
 
 # Parallel World set up
-sv:Ph/Default/LayeredMassGeometryWorlds = 2 "Scoring" "MeshWorld"
+sv:Ph/Default/LayeredMassGeometryWorlds = 1 "Scoring"
 sv:Ph/Default/Modules                   = 1 "g4em-standard_opt3"
 
-s:Ge/MeshWorld/Parent     = "World"
-b:Ge/MeshWorld/IsParallel = "True"
-s:Ge/MeshWorld/Type       = "Group"
-
 # Materials should be set by material file
-s:Ge/MeshGeometry/Type             = "TsMRCP"
-s:Ge/MeshGeometry/Parent           = "World"
-# b:Ge/MeshGeometry/IsParallel       = "True"
-s:Ge/MeshGeometry/PhantomDirectory = "/Users/isaacmeyer/topas_extensions/TOPAS-MeshGeom/examples/Omed"
-s:Ge/MeshGeometry/NodeFile         = "Omed.node"
-s:Ge/MeshGeometry/MaterialFile     = "Omed.material"
-s:Ge/MeshGeometry/EleFile          = "Omed.ele"
-d:Ge/MeshGeometry/TransX           = 0 cm
-d:Ge/MeshGeometry/TransY           = 0 cm
-d:Ge/MeshGeometry/TransZ           = 0 cm
-d:Ge/MeshGeometry/RotX             = 0. deg
-d:Ge/MeshGeometry/RotY             = 0. deg
-d:Ge/MeshGeometry/RotZ             = 0. deg
-iv:Gr/Color/transparentred = 4 255 0 0 50
-iv:Gr/Color/transparentblue = 4 0 0 255 50
-s:Ge/MeshGeometry/TetLogic/Color  = "transparentred"
-sc:Ge/MeshGeometry/TetLogic/DrawingStyle  = "solid"
-b:Ge/MeshGeometry/MeshGeometry/Invisible  = "True"
-
-s:Ge/Scoring/Parent     = "World"
-s:Ge/Scoring/Type       = "TsBox"
-b:Ge/Scoring/IsParallel = "True"
-s:Ge/Scoring/Material   = "G4_Galactic"
-d:Ge/Scoring/HLX        = 60 cm
-d:Ge/Scoring/HLY        = 90 cm
-d:Ge/Scoring/HLZ        = 30 cm
-i:Ge/Scoring/XBins      = 120
-i:Ge/Scoring/YBins      = 100
-i:Ge/Scoring/ZBins      = 100
-b:Ge/Scoring/Invisible   = "True"
+s:Ge/MeshPhantom/Type             = "TsMRCP"
+s:Ge/MeshPhantom/Parent           = "World"
+s:Ge/MeshPhantom/PhantomDirectory = "./"
+s:Ge/MeshPhantom/NodeFile         = "Omed.node"
+s:Ge/MeshPhantom/MaterialFile     = "Omed.material"
+s:Ge/MeshPhantom/EleFile          = "Omed.ele"
+d:Ge/MeshPhantom/TransX           = 0 cm
+d:Ge/MeshPhantom/TransY           = 0 cm
+d:Ge/MeshPhantom/TransZ           = 0 cm
+d:Ge/MeshPhantom/RotX             = 0. deg
+d:Ge/MeshPhantom/RotY             = 0. deg
+d:Ge/MeshPhantom/RotZ             = 0. deg
 
 # Colors
-# iv:Gr/Color/transparentred = 4 255 0 0 10
-# ivc:Gr/Color/transparentblue = 4 0 0 255 50
-# # Color of Phantom (component name is hardcoded)
-# s:Ge/MeshGeometry/TetLogic/Color  = "transparentred"
+iv:Gr/Color/transparentred               = 4 255 0 0 50
+iv:Gr/Color/transparentblue              = 4 0 0 255 50
+# Color of Phantom (component name is hardcoded)
+s:Ge/MeshPhantom/TetLogic/Color         = "transparentred"
+sc:Ge/MeshPhantom/TetLogic/DrawingStyle = "solid"
+b:Ge/MeshPhantom/MeshPhantom/Invisible = "True"
+
+# Scoring grid
+s:Ge/Scoring/Parent     = "World"
+s:Ge/Scoring/Type       = "TsBox"
+s:Ge/Scoring/Material   = "G4_Galactic"
+b:Ge/Scoring/IsParallel = "True"
+d:Ge/Scoring/HLX        = 60 cm
+d:Ge/Scoring/HLY        = 30 cm
+d:Ge/Scoring/HLZ        = 90 cm
+i:Ge/Scoring/XBins      = 10
+i:Ge/Scoring/YBins      = 10
+i:Ge/Scoring/ZBins      = 4 
+s:Ge/Scoring/DrawStyle  = "wireframe"
+
+# Scoring 
+s:Sc/GridScore/Quantity                  = "DoseToWater"
+s:Sc/GridScore/Component                 = "Scoring"
+s:Sc/GridScore/OutputFile                = "OmedGridScorer"
+s:Sc/GridScore/OutputType                = "csv"
+s:Sc/GridScore/IfOutputFileAlreadyExists = "Overwrite"
+sv:Sc/GridScore/Report                   = 2 "Sum" "Count_In_Bin"
+
+s:Sc/MeshScorer/Quantity                  = "TsMRCPScorer"
+s:Sc/MeshScorer/Component                 = "MeshPhantom"
+s:Sc/MeshScorer/OutputFile                = "OmedMeshScorer"
+s:Sc/MeshScorer/OutputType                = "csv"
+s:Sc/MeshScorer/IfOutputFileAlreadyExists = "Overwrite"
+sv:Sc/MeshScorer/Report                   = 2 "Sum" "Count_In_Bin"
 
 # Axes position
 s:Ge/AxesPosition/Parent = "World"
@@ -63,6 +71,7 @@ s:Ge/SourcePosition/Type   = "Group"
 d:Ge/SourcePosition/TransX = 0. m
 d:Ge/SourcePosition/TransY = 0. m
 d:Ge/SourcePosition/TransZ = 100 cm
+d:Ge/SourcePosition/RotY   = 180. deg
 
 s:So/Proton/Type                     = "Beam"
 s:So/Proton/Component                = "SourcePosition"
@@ -71,11 +80,11 @@ s:So/Proton/BeamPositionDistribution = "Flat" # None, Flat or Gaussian
 s:So/Proton/BeamPositionCutoffShape  = "Rectangle" # Rectangle or Ellipse (if Flat or Gaussian)
 d:So/Proton/BeamPositionCutoffX      = 10 cm # X extent of position (if Flat or Gaussian)
 d:So/Proton/BeamPositionCutoffY      = 10 cm # Y extent of position (if Flat or Gaussian)
-d:So/Proton/BeamEnergy               = 100 MeV
+d:So/Proton/BeamEnergy               = 300 MeV
 s:So/Proton/BeamAngularDistribution  = "None" # None, Flat or Gaussian
 
 # Settings
-#                                       1234567890
+# Order tracker:                        1234567890
 ic:So/Proton/NumberOfHistoriesInRun  = 100
 i:Ts/ShowHistoryCountAtInterval      = 10
 i:Ts/NumberOfThreads                 = 12
@@ -93,11 +102,12 @@ i:Ts/IndexErrorMaxReports            = 5
 # b:Gr/CT4/Enable = "True"
 # i:Gr/ShowOnlyOutlineIfVoxelCountExceeds = 2147483646
   
-b:Gr/ViewA/IncludeAxes   = "True"
-d:Gr/ViewA/AxesSize      = 20 cm
-d:Gr/ViewA/Theta         = 54.74 deg
-d:Gr/ViewA/Phi           = -45 deg
-s:Gr/ViewA/AxesComponent = "AxesPosition"
-s:Gr/ViewA/Type          = "OpenGL"
-uv:Gr/ViewA/UpVector     = 3 0. 0. 1.
-b:Ts/UseQt               = "True"
+# Uncomment for GUI
+# b:Gr/ViewA/IncludeAxes   = "True"
+# d:Gr/ViewA/AxesSize      = 20 cm
+# d:Gr/ViewA/Theta         = 54.74 deg
+# d:Gr/ViewA/Phi           = -45 deg
+# s:Gr/ViewA/AxesComponent = "AxesPosition"
+# s:Gr/ViewA/Type          = "OpenGL"
+# uv:Gr/ViewA/UpVector     = 3 0. 0. 1.
+# b:Ts/UseQt               = "True"
