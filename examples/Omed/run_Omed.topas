@@ -12,6 +12,8 @@ s:Ge/MeshWorld/Parent     = "World"
 b:Ge/MeshWorld/IsParallel = "True"
 s:Ge/MeshWorld/Type       = "Group"
 
+
+
 # Materials should be set by material file
 s:Ge/MeshGeometry/Type             = "TsMRCP"
 s:Ge/MeshGeometry/Parent           = "World"
@@ -63,6 +65,7 @@ s:Ge/SourcePosition/Type   = "Group"
 d:Ge/SourcePosition/TransX = 0. m
 d:Ge/SourcePosition/TransY = 0. m
 d:Ge/SourcePosition/TransZ = 100 cm
+d:Ge/SourcePosition/RotX   = 180. deg
 
 s:So/Proton/Type                     = "Beam"
 s:So/Proton/Component                = "SourcePosition"
@@ -83,6 +86,19 @@ b:Ts/ShowCPUTime                     = "True"
 i:Ts/ParameterizationErrorMaxReports = 5
 i:Ts/IndexErrorMaxReports            = 5
 
+s:Sc/MeshScorer/Quantity                  = "TsMRCPScorer"
+s:Sc/MeshScorer/Component                 = "MeshGeometry"
+s:Sc/MeshScorer/OutputFile                = "OmedMeshScorer"
+s:Sc/MeshScorer/OutputType                = "csv"
+s:Sc/MeshScorer/IfOutputFileAlreadyExists = "Overwrite"
+b:Sc/MeshScorer/UseBaseOutput             = "True"
+sv:Sc/MeshScorer/Report                   = 3 "sum" "Count_In_Bin" "differentialvolumehistogram"
+sv:Sc/MeshScorer/ICRPMaterials            = 1 "Blood"
+i:Sc/MeshScorer/HistogramBins              = 30
+d:Sc/MeshScorer/HistogramMin              = 0.0 Gy
+d:Sc/MeshScorer/HistogramMax              = 1 Gy
+b:Sc/MeshScorer/HistogramAutoMax           = "True"
+
 # # s:Gr/CT4/Type = "VRML"
 # s:Gr/CT4/Type = "RayTracer"
 # i:Gr/CT4/WindowSizeX = 2000
@@ -93,11 +109,11 @@ i:Ts/IndexErrorMaxReports            = 5
 # b:Gr/CT4/Enable = "True"
 # i:Gr/ShowOnlyOutlineIfVoxelCountExceeds = 2147483646
   
-b:Gr/ViewA/IncludeAxes   = "True"
-d:Gr/ViewA/AxesSize      = 20 cm
-d:Gr/ViewA/Theta         = 54.74 deg
-d:Gr/ViewA/Phi           = -45 deg
-s:Gr/ViewA/AxesComponent = "AxesPosition"
-s:Gr/ViewA/Type          = "OpenGL"
-uv:Gr/ViewA/UpVector     = 3 0. 0. 1.
-b:Ts/UseQt               = "True"
+# b:Gr/ViewA/IncludeAxes   = "True"
+# d:Gr/ViewA/AxesSize      = 20 cm
+# d:Gr/ViewA/Theta         = 54.74 deg
+# d:Gr/ViewA/Phi           = -45 deg
+# s:Gr/ViewA/AxesComponent = "AxesPosition"
+# s:Gr/ViewA/Type          = "OpenGL"
+# uv:Gr/ViewA/UpVector     = 3 0. 0. 1.
+# b:Ts/UseQt               = "True"

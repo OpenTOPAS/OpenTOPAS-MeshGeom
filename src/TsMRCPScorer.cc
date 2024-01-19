@@ -187,6 +187,7 @@ G4bool TsMRCPScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		                               ->GetReplicaNumber(indexDepth);
 
 	G4double edep = aStep->GetTotalEnergyDeposit();
+    G4cout << "Hit at index " << idx << " with material " << aStep->GetPreStepPoint()->GetMaterial()->GetName() << G4endl;
 	if ( edep > 0. && ScoreMaterialFlag(aStep->GetPreStepPoint()->GetMaterial()->GetName()) )
 	{
 		G4double density = aStep->GetPreStepPoint()->GetMaterial()->GetDensity();
@@ -273,7 +274,6 @@ void TsMRCPScorer::RestoreResultsFromFile()
 
 void TsMRCPScorer::BuildMaterialMap(){
     // Precompute a boolean map over all materials in materials file
-    std::vector<G4String> test = fmrcpParam->GetMaterialNames();
     for (auto &mat: fmrcpParam->GetMaterialNames()){
         fMaterialMap[mat] = false;
         for (int i=0; i<fNmaterials; i++){
