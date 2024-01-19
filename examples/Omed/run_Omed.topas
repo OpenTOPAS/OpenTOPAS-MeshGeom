@@ -56,7 +56,13 @@ s:Sc/MeshScorer/Component                 = "MeshPhantom"
 s:Sc/MeshScorer/OutputFile                = "OmedMeshScorer"
 s:Sc/MeshScorer/OutputType                = "csv"
 s:Sc/MeshScorer/IfOutputFileAlreadyExists = "Overwrite"
-sv:Sc/MeshScorer/Report                   = 2 "Sum" "Count_In_Bin"
+b:Sc/MeshScorer/UseBaseOutput             = "True"
+sv:Sc/MeshScorer/Report                   = 3 "sum" "Count_In_Bin" "cumulativevolumehistogram"
+b:Sc/MeshScorer/ReportDoseByTet           = "True"
+i:Sc/MeshScorer/HistogramBins              = 30
+d:Sc/MeshScorer/HistogramMin              = 0.0 Gy
+d:Sc/MeshScorer/HistogramMax              = 1 Gy
+b:Sc/MeshScorer/HistogramAutoMax           = "True"
 
 # Axes position
 s:Ge/AxesPosition/Parent = "World"
@@ -70,8 +76,8 @@ s:Ge/SourcePosition/Parent = "World"
 s:Ge/SourcePosition/Type   = "Group"
 d:Ge/SourcePosition/TransX = 0. m
 d:Ge/SourcePosition/TransY = 0. m
-d:Ge/SourcePosition/TransZ = 100 cm
-d:Ge/SourcePosition/RotY   = 180. deg
+d:Ge/SourcePosition/TransZ = -100 cm
+d:Ge/SourcePosition/RotY   = 0. deg
 
 s:So/Proton/Type                     = "Beam"
 s:So/Proton/Component                = "SourcePosition"
@@ -85,7 +91,7 @@ s:So/Proton/BeamAngularDistribution  = "None" # None, Flat or Gaussian
 
 # Settings
 # Order tracker:                        1234567890
-ic:So/Proton/NumberOfHistoriesInRun  = 100
+ic:So/Proton/NumberOfHistoriesInRun  = 1000
 i:Ts/ShowHistoryCountAtInterval      = 10
 i:Ts/NumberOfThreads                 = 12
 b:Ts/ShowCPUTime                     = "True"

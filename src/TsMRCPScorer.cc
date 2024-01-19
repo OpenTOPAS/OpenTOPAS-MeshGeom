@@ -11,7 +11,7 @@
 
 TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 		G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
-		: TsVBinnedScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer), fEmCalculator()
+		: TsVBinnedScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer), fEmCalculator(), fUseMaterialFilter(false), fReportDoseByTet(false), fNUsedVolumes(0), fTotalVolume(0.0), fHistogramAutoMax(true)
 {
 	SetUnit("Gy");
 
@@ -31,6 +31,30 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
 		}
 	}
 
+    if (fPm->ParameterExists(GetFullParmName("HistogramAutoMax"))){
+        fHistogramAutoMax = fPm->GetBooleanParameter(GetFullParmName("HistogramAutoMax"));
+    }
+
+    if (fPm->ParameterExists(GetFullParmName("ReportDoseByTet"))){
+        fReportDoseByTet = fPm->GetBooleanParameter(GetFullParmName("ReportDoseByTet"));
+    }
+
+    // Check files for writing
+    G4int increment = 0;
+    if (fReportCVolHist || fReportDVolHist){
+        if (fOutputToBinary){
+            fVHOutFileSpec1 = ConfirmCanOpen(fOutFileName+"_VolHist", ".bin", increment);
+            fVHOutFileSpec2 = ConfirmCanOpen(fOutFileName+"_VolHist", ".binheader", increment);
+        }
+        else if (fOutputToCsv){
+            fVHOutFileSpec1 = ConfirmCanOpen(fOutFileName+"_VolHist", ".csv", increment);
+        }
+    }
+    if (fReportDoseByTet){
+        // Binary output not implemented for dose by tet
+        fDoseElementsFileSpec1 = ConfirmCanOpen(fOutFileName+"_DoseByTet", ".csv", increment);
+    }
+
     // Get reference to MRCP paramterization. Assumes phantom name is hardcoded and that
     // we have only one phantom in the geometry
     G4String componentName = fPm->GetStringParameter(GetFullParmName("Component"));
@@ -39,31 +63,19 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
     G4VPhysicalVolume* physVol = component->GetPhysicalVolume(volumeName);
     fmrcpParam = dynamic_cast<TsMRCPParameterization*>(physVol->GetParameterisation());
 
-    // Current behavior is to always produce Absolute Differential DVH
-    fReportAbsDVolHist = true;
-
-    // Current behavior is to always produce dose to each tetrahedron
-    fReportDoseByTet = true;
-
 	// Get ICRP Material names to use as filters and precompute boolean map
 	if (fPm->ParameterExists(GetFullParmName("ICRPMaterials"))){
 		fICRPMaterials = fPm->GetStringVector(GetFullParmName("ICRPMaterials"));
 		fNmaterials = fPm->GetVectorLength(GetFullParmName("ICRPMaterials"));
-    }
-    BuildMaterialMap();
+        fUseMaterialFilter = true;
+        BuildMaterialMap();
 
-    G4cout << "Scorer " << GetFullParmName("") << " is using the following " <<
-        fNmaterials << " ICRP material(s): " << G4endl;
-    for (G4int i=0; i<fNmaterials; i++){
-	    G4cout << "    " << i << " " << fICRPMaterials[i] << G4endl;
-    }
-    G4cout << G4endl;
-
-	if (!fPm->ParameterExists(GetFullParmName("UseBaseOutput")))
-		fUseBaseOutput = false;
-	else
-    {
-		fUseBaseOutput = fPm->GetBooleanParameter(GetFullParmName("UseBaseOutput"));
+        G4cout << "Scorer " << GetFullParmName("") << " is using the following " <<
+            fNmaterials << " ICRP material(s): " << G4endl;
+        for (G4int i=0; i<fNmaterials; i++){
+            G4cout << "    " << i << " " << fICRPMaterials[i] << G4endl;
+        }
+        G4cout << G4endl;
     }
 
     G4bool restoreResultsFromFile = false;
@@ -186,6 +198,7 @@ G4bool TsMRCPScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     G4int idx = ((G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable()))
 		                               ->GetReplicaNumber(indexDepth);
 
+    // G4Material* mat = fmrcpParam.ComputeMaterial(idx);
 	G4double edep = aStep->GetTotalEnergyDeposit();
 	if ( edep > 0. && ScoreMaterialFlag(aStep->GetPreStepPoint()->GetMaterial()->GetName()) )
 	{
@@ -222,6 +235,8 @@ G4bool TsMRCPScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4double referenceMaterialStoppingPower = fEmCalculator.ComputeTotalDEDX(100*MeV, G4Proton::ProtonDefinition(), fReferenceMaterial);
 			dose *= (density / fReferenceMaterial->GetDensity()) * (referenceMaterialStoppingPower / materialStoppingPower);
 		}
+        G4cout << "Hit index: " << idx << " dose: " << dose << G4endl;
+        G4cout << "In material " << aStep->GetPreStepPoint()->GetMaterial()->GetName() << G4endl;
 		AccumulateHit(aStep, dose, idx);
 		return true;
 	}
@@ -262,11 +277,11 @@ void TsMRCPScorer::RestoreResultsFromFile()
     for (G4int i=0; i<std::size(dvh.fBinValues); i++){
         totalVol += dvh.fBinValues[i];
     }
-    fRelVolumeHistogramBinVols.resize(dvh.fBinValues.size(), 0.0);
+    fVolumeHistogramVolumes.resize(dvh.fBinValues.size(), 0.0);
     fHistogramLowerValues.resize(dvh.fBinValues.size(), 0.0);
     for (G4int i=0; i < std::size(dvh.fBinValues); i++){
         fHistogramLowerValues[i] = dvh.fBinEdges[i];
-        fRelVolumeHistogramBinVols[i] = dvh.fBinValues[i]/totalVol;
+        fVolumeHistogramVolumes[i] = dvh.fBinValues[i]/totalVol;
     }
     std::cout << std::endl;
 }
@@ -286,7 +301,12 @@ void TsMRCPScorer::BuildMaterialMap(){
 }
 
 G4bool TsMRCPScorer::ScoreMaterialFlag(const G4String &mat){
-    return fMaterialMap[mat];
+    if (fUseMaterialFilter){
+        return fMaterialMap[mat];
+    }
+    else {
+        return true;
+    }
 }
 
 void TsMRCPScorer::Output() {
@@ -294,90 +314,122 @@ void TsMRCPScorer::Output() {
     if (fRestoreResultsFromFile){
         G4cout << "Using restored histogram values for outcome model." << G4endl;
         G4bool isDifVolHist = true;
-        fOm->CalculateOutcome(fHistogramLowerValues, fRelVolumeHistogramBinVols,
+        fOm->CalculateOutcome(fHistogramLowerValues, fVolumeHistogramVolumes,
                               isDifVolHist);
         return;
     }
 
-    if (fUseBaseOutput) {
-        G4cout << fUseBaseOutput << G4endl;
-        G4cout << "Using the Output behavior of parent TsVBinnedScorer for TsMRCPScorer: " << GetName() << G4endl;
-        TsVBinnedScorer::Output();
+    // Print sum of doses
+    G4double totalSum = 0.0;
+    for (G4int i=0; i<fNDivisions; i++){
+        CalculateOneValue(i);
+        totalSum += fSum;
     }
+    G4cout << "Total sum of doses: " << totalSum << G4endl;
 
-    fTotalVolume = 0;
-    fNUsedVolumes = 0;
-    G4double vol = 0;
-    // Calculate differential absolute dose volume histogram
-    if (fReportAbsDVolHist) {
-        G4cout << "Generating Absolute DVH " << G4endl;
-        // Currently fNDivisions includes all tetrahedra of phantom, an if statement will skip
-        // organs that do not match this scorer's name
-        fAbsVolumeHistogramBinVols.resize(fHistogramBins, 0);
+
+    // Handle volume histograms
+    if (fReportCVolHist || fReportDVolHist) {
+        // Recalculate histogram bin max value now that we have results
+        G4double newMax = 0.0;
+        if (fHistogramAutoMax) {
+            for (int idx = 0; idx < fNDivisions; idx++) {
+                CalculateOneValue(idx);
+                if (fSum >= newMax) {
+                    newMax = fSum;
+                }
+            }
+            if (newMax > 0.0) {
+                fHistogramMax = newMax;
+                // Ensure bins above max so there is not overflow
+                G4double binWidth = ( fHistogramMax - fHistogramMin ) / (fHistogramBins - 1);
+                for (G4int i=0; i < fHistogramBins; i++){
+                    fHistogramLowerValues[i] = fHistogramMin + i * binWidth;
+                }
+            }
+        }
+        fVolumeHistogramVolumes.resize(fHistogramBins, 0.0);
+
+        G4double vol;
         for (G4int i = 0; i < fNDivisions; i++) {
             CalculateOneValue(i);
-            if (fSum >= 0. && ScoreMaterialFlag(fmrcpParam->ComputeMaterial(i)->GetName()) ) {
+            if (ScoreMaterialFlag(fmrcpParam->ComputeMaterial(i)->GetName()) ) {
                 vol = fmrcpParam->GetVolumeOfTet(i);
                 fTotalVolume += vol;
                 fNUsedVolumes++;
-                TallyHistogramValue(fHistogramLowerValues, fAbsVolumeHistogramBinVols, fSum, vol);
+                TallyHistogramValue(fHistogramLowerValues, fVolumeHistogramVolumes, fSum, vol);
+            }
+        }
+
+        // Normalize histogram
+        for (G4int i=0; i < fHistogramBins; i++){
+            fVolumeHistogramVolumes[i] /= fTotalVolume;
+        }
+
+        // Calculate cumulative volume histogram
+        if (fReportCVolHist) {
+            for (G4int i = fHistogramBins-1; i > 1; i--) {
+                fVolumeHistogramVolumes[i - 1] += fVolumeHistogramVolumes[i];
+            }
+        }
+
+        if (fOutputToCsv) {
+            std::ofstream ofile(fVHOutFileSpec1);
+            if (ofile) {
+                PrintVHHeader(ofile);
+                PrintVHASCII(ofile);
+                ofile.close();
+            } else {
+                G4cerr << "Topas is exiting due to a serious error in scoring." << G4endl;
+                G4cerr << "Output file: " << fVHOutFileSpec1 << " cannot be opened for Scorer name: " << GetName() << G4endl;
+                fPm->AbortSession(1);
+            }
+        } else if (fOutputToBinary) {
+            std::ofstream hfile(fVHOutFileSpec1);
+            if (hfile) {
+                PrintVHHeader(hfile);
+                hfile << "# Binary file: " << fVHOutFileSpec2 << G4endl;
+                hfile.close();
+            } else {
+                G4cerr << "Topas is exiting due to a serious error in scoring." << G4endl;
+                G4cerr << "Output file: " << fVHOutFileSpec1 << " cannot be opened for Scorer name: " << GetName() << G4endl;
+                fPm->AbortSession(1);
+            }
+
+            std::ofstream ofile(fVHOutFileSpec2, std::ios::out | std::ios::binary);
+            if (ofile) {
+                PrintVHBinary(ofile);
+                ofile.close();
+            } else {
+                G4cerr << "Topas is exiting due to a serious error in scoring." << G4endl;
+                G4cerr << "Output file: " << fVHOutFileSpec2 << " cannot be opened for Scorer name: " << GetName() << G4endl;
+                fPm->AbortSession(1);
             }
         }
     }
 
-    // Output to CSV
-    std::ofstream ofile(fOutFileName + "_AbsDifVolHist.csv");
-    ofile << "# TOPAS Version: " << fPm->GetTOPASVersion() << G4endl;
-	ofile << "# Parameter File: " << fPm->GetTopParameterFileSpec() << G4endl;
-	ofile << "# Results for Scorer: " << GetNameWithSplitId() << G4endl;
-	ofile << "# ICRP Materials scored:";
-    for (G4int i=0; i<fNmaterials; i++){
-	    ofile << " " << fICRPMaterials[i];
-    }
-    ofile << G4endl;
-    ofile << "# Absolute differential dose volume histogram over number of tetrahedra: " << fNUsedVolumes << G4endl;
-    ofile << "# Total volume (mm^3): " << fTotalVolume << G4endl;
-	ofile << "# BinNumber, LowerLimit of " << fQuantity;
-	if (GetUnit()!="")
-		ofile << " ( " << GetUnit() << " )";
-	else if (fScm->AddUnitEvenIfItIsOne())
-		ofile << " ( 1 )";
-	ofile << ", Value" << G4endl;
-
-    if (ofile) {
-        ofile << std::setprecision(16); // for double value with 8 bytes
-        for (G4int j = 0; j < fHistogramBins; j++){
-            ofile << j << ", " << fHistogramLowerValues[j] << ", " << fAbsVolumeHistogramBinVols[j] << G4endl;
-        }
-        ofile.close();
-    } else {
-        G4cerr << "Topas is exiting due to a serious error in scoring." << G4endl;
-        G4cerr << "Output file: " << fVHOutFileSpec1 << " cannot be opened for Scorer name: " << GetName() << G4endl;
-        fPm->AbortSession(1);
-    }
-    G4cout << "End of TsMRCPScorer output for Scorer: " << GetName() << G4endl;
-
     // Output full tet and dose information
     if (fReportDoseByTet){
+        G4double vol;
         std::ofstream ofile(fOutFileName + "_DoseByTet.csv");
         ofile << "# TOPAS Version: " << fPm->GetTOPASVersion() << G4endl;
         ofile << "# Parameter File: " << fPm->GetTopParameterFileSpec() << G4endl;
         ofile << "# Results for Scorer: " << GetNameWithSplitId() << G4endl;
-        ofile << "# ICRP Materials scored:";
-        for (G4int i=0; i<fNmaterials; i++){
-            ofile << " " << fICRPMaterials[i];
+        if (fUseMaterialFilter){
+            ofile << "# ICRP Materials scored:";
+            for (G4int i=0; i<fNmaterials; i++){
+                ofile << " " << fICRPMaterials[i];
+            }
+            ofile << G4endl;
         }
-        ofile << G4endl;
         ofile << "# Doses by individual tetrahedra" << G4endl;
         ofile << "# Index, Dose (Gy), Volume (mm^3), Counts" << G4endl;
         if (ofile) {
             ofile << std::setprecision(16); // for double value with 8 bytes
             for (G4int j = 0; j < fNDivisions; j++) {
                 CalculateOneValue(j);
-                if (fSum >= 0. && ScoreMaterialFlag(fmrcpParam->ComputeMaterial(j)->GetName()) ) {
-                    vol = fmrcpParam->GetVolumeOfTet(j)/mm3;
-                    ofile << j << ", " << fSum << ", " << vol << "," << fCountInBin << G4endl;
-                }
+                vol = fmrcpParam->GetVolumeOfTet(j)/mm3;
+                ofile << j << ", " << fSum << ", " << vol << "," << fCountInBin << G4endl;
             }
             ofile.close();
         } else {
@@ -388,4 +440,30 @@ void TsMRCPScorer::Output() {
     }
 
     G4cout << "End of TsMRCPScorer output for Scorer: " << GetName() << G4endl;
+}
+
+
+void TsMRCPScorer::PrintVHASCII(std::ostream& ofile)
+{
+	ofile << std::setprecision(16); // for double value with 8 bytes
+	for (int j = 0; j < fHistogramBins; j++)
+		ofile << j << ", " << fHistogramLowerValues[j] << ", " << fVolumeHistogramVolumes[j] << G4endl;
+	ofile << std::setprecision(6);
+}
+
+
+void TsMRCPScorer::PrintVHBinary(std::ostream& ofile)
+{
+	G4double* data = new G4double[fHistogramBins];
+    for (int j = 0; j < fHistogramBins; j++){
+        data[j] = fVolumeHistogramVolumes[j];
+    }
+	ofile.write( (char*) data, fHistogramBins*sizeof(G4double));
+	delete[] data;
+}
+
+void TsMRCPScorer::CalculateOneValue(G4int idx)
+{
+    fCountInBin = fCountMap[idx];
+    fSum = fFirstMomentMap[idx] / GetUnitValue();
 }
