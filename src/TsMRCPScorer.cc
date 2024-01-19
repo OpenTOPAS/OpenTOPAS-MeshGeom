@@ -235,8 +235,6 @@ G4bool TsMRCPScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4double referenceMaterialStoppingPower = fEmCalculator.ComputeTotalDEDX(100*MeV, G4Proton::ProtonDefinition(), fReferenceMaterial);
 			dose *= (density / fReferenceMaterial->GetDensity()) * (referenceMaterialStoppingPower / materialStoppingPower);
 		}
-        G4cout << "Hit index: " << idx << " dose: " << dose << G4endl;
-        G4cout << "In material " << aStep->GetPreStepPoint()->GetMaterial()->GetName() << G4endl;
 		AccumulateHit(aStep, dose, idx);
 		return true;
 	}
