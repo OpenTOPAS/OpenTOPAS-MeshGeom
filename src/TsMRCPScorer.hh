@@ -23,7 +23,7 @@ public:
 
 	~TsMRCPScorer();
 
-private:
+protected:
     G4bool ScoreMaterialFlag(const G4String &mat);
     void BuildMaterialMap();
     std::map<G4String, G4bool> fMaterialMap;
@@ -38,14 +38,29 @@ private:
 	G4EmCalculator fEmCalculator;
     TsMRCPParameterization* fmrcpParam;
 
-    G4bool fReportAbsDVolHist;
+    G4bool fUseMaterialFilter;
+    G4int fNReportValues;
     G4bool fReportDoseByTet;
-    G4bool fUseBaseOutput;
+    G4bool fHistogramAutoMax;
+
     void Output(); // Overwrites parent definition
+    std::vector<G4double> fVolumeHistogramVolumes;
     G4int fNUsedVolumes;
     G4double fTotalVolume;
-    std::vector<G4double> fAbsVolumeHistogramBinVols;
-    std::vector<G4double> fRelVolumeHistogramBinVols;
+
+    G4String fVHOutFileSpec1;
+    G4String fVHOutFileSpec2;
+    G4String fDoseElementsFileSpec1;
+
+    void CalculateOneValue(G4int index);
+
+    // TODO: maybe write header files
+    void PrintVHASCII(std::ostream& ofile);
+    void PrintVHBinary(std::ostream& ofile);
+
+private:
+    G4int fCountInBin;
+    G4double fSum;
 };
 
 #endif

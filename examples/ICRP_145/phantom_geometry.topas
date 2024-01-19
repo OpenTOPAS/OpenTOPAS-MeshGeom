@@ -9,6 +9,8 @@ s:Ge/World/Material                     = "Vacuum"
 s:Ge/MRCPPhantom/Type					= "TsMRCP"
 s:Ge/MRCPPhantom/Parent					= "World"
 s:Ge/MRCPPhantom/Material           	= "G4_WATER"
+# Set directory containing .ele/.node/.material files
+# Expects files to be in the MRCP_AF.* or MRCP_AM.*
 s:Ge/MRCPPhantom/PhantomDirectory		= "/Users/isaacmeyer/data/ICRP_phantoms_145/phantoms/"
 s:Ge/MRCPPhantom/Age					= "A"
 s:Ge/MRCPPhantom/Sex					= "F"
@@ -28,20 +30,19 @@ dv:Tf/Energy/Times			= 5 20 40 60 80 100 ms
 dv:Tf/Energy/Values			= 5 160 155 150 145 140 MeV
 s:Tf/Histories/Function		= "Step"
 dv:Tf/Histories/Times		= 5 20 40 60 80 100 ms
-#iv:Tf/Histories/Values		= 5 6600 2500 1750 1400 1200
-iv:Tf/Histories/Values		= 5 10 10 10 10 10
+# iv:Tf/Histories/Values		= 5 6600 2500 1750 1400 1200
+iv:Tf/Histories/Values		= 5 1000 1000 1000 1000 1000
 
-s:So/Example/Type				= "Beam"
-s:So/Example/Component			= "BeamPosition"
-s:So/Example/BeamParticle		= "proton"
-d:So/Example/BeamEnergy			= Tf/Energy/Value MeV
-u:So/Example/BeamEnergySpread	= 0.757504
-s:So/Example/BeamPositionDistribution	= "Flat"
-s:So/Example/BeamPositionCutoffShape	= "Ellipse"
-d:So/Example/BeamPositionCutoffX		= 10. mm
-d:So/Example/BeamPositionCutoffY		= 10. mm
-s:So/Example/BeamAngularDistribution	= "None"
-i:So/Example/NumberOfHistoriesInRun		= Tf/Histories/Value * 100
+s:So/Example/Type                     = "Beam"
+s:So/Example/Component                = "BeamPosition"
+s:So/Example/BeamParticle             = "proton"
+d:So/Example/BeamEnergy               = Tf/Energy/Value MeV
+u:So/Example/BeamEnergySpread         = 0.757504
+s:So/Example/BeamPositionDistribution = "Flat"
+s:So/Example/BeamPositionCutoffShape  = "Ellipse"
+d:So/Example/BeamPositionCutoffX      = 10. mm
+d:So/Example/BeamPositionCutoffY      = 10. mm
+s:So/Example/BeamAngularDistribution  = "None"
 
 d:Ge/BeamPosition/TransX   = -23.65 cm
 d:Ge/BeamPosition/TransY   = 0. cm
@@ -49,8 +50,6 @@ d:Ge/BeamPosition/TransZ   = 30. cm
 d:Ge/BeamPosition/RotX     = 0. deg
 d:Ge/BeamPosition/RotY     = -90. deg
 d:Ge/BeamPosition/RotZ     = 0. deg
-
-u:Sc/ScaleFactor 			= 1.0
 
 # Start
 i:Ts/Seed                            = 42
