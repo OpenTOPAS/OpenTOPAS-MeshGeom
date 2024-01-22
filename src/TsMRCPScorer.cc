@@ -31,6 +31,20 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
 		}
 	}
 
+    G4String* reportValues;
+	if (fPm->ParameterExists(GetFullParmName("Report"))) {
+		reportValues = fPm->GetStringVector(GetFullParmName("Report"));
+        G4int nValues = fPm->GetVectorLength(GetFullParmName("Report"));
+        for (G4int i = 0; i < nValues; i++){
+            if (reportValues[i] == "differentialvolumehistogram") {
+                fReportDVolHist = true;
+            } else if (reportValues[i] == "cumulativevolumehistogram") {
+                fReportCVolHist = true;
+            }
+        }
+	}
+
+
     if (fPm->ParameterExists(GetFullParmName("HistogramAutoMax"))){
         fHistogramAutoMax = fPm->GetBooleanParameter(GetFullParmName("HistogramAutoMax"));
     }
@@ -200,7 +214,6 @@ G4bool TsMRCPScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
     // G4Material* mat = fmrcpParam.ComputeMaterial(idx);
 	G4double edep = aStep->GetTotalEnergyDeposit();
-    G4cout << "Hit at index " << idx << " with material " << aStep->GetPreStepPoint()->GetMaterial()->GetName() << G4endl;
 	if ( edep > 0. && ScoreMaterialFlag(aStep->GetPreStepPoint()->GetMaterial()->GetName()) )
 	{
 		G4double density = aStep->GetPreStepPoint()->GetMaterial()->GetDensity();
@@ -340,7 +353,7 @@ void TsMRCPScorer::Output() {
             if (newMax > 0.0) {
                 fHistogramMax = newMax;
                 // Ensure bins above max so there is not overflow
-                G4double binWidth = ( fHistogramMax - fHistogramMin ) / (fHistogramBins - 1);
+                G4double binWidth = ( fHistogramMax - fHistogramMin ) / (fHistogramBins - 2);
                 for (G4int i=0; i < fHistogramBins; i++){
                     fHistogramLowerValues[i] = fHistogramMin + i * binWidth;
                 }
@@ -366,7 +379,7 @@ void TsMRCPScorer::Output() {
 
         // Calculate cumulative volume histogram
         if (fReportCVolHist) {
-            for (G4int i = fHistogramBins-1; i > 1; i--) {
+            for (G4int i = fHistogramBins-1; i >= 1; i--) {
                 fVolumeHistogramVolumes[i - 1] += fVolumeHistogramVolumes[i];
             }
         }

@@ -39,7 +39,8 @@ protected:
     TsMRCPParameterization* fmrcpParam;
 
     G4bool fUseMaterialFilter;
-    G4int fNReportValues;
+    G4bool fReportCVolHist;
+    G4bool fReportDVolHist;
     G4bool fReportDoseByTet;
     G4bool fHistogramAutoMax;
 
