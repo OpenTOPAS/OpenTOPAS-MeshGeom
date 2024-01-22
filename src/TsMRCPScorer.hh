@@ -24,6 +24,8 @@ public:
 	~TsMRCPScorer();
 
 protected:
+    TsOutcomeModelList* fOm;
+
     G4bool ScoreMaterialFlag(const G4String &mat);
     void BuildMaterialMap();
     std::map<G4String, G4bool> fMaterialMap;
@@ -43,9 +45,14 @@ protected:
     G4bool fReportDVolHist;
     G4bool fReportDoseByTet;
     G4bool fHistogramAutoMax;
+    G4bool fRestoreResultsFromFile;
 
     void Output(); // Overwrites parent definition
+	std::vector<G4double> fHistogramLowerValues;
     std::vector<G4double> fVolumeHistogramVolumes;
+    G4double fHistogramMin;
+    G4double fHistogramMax;
+    G4int fHistogramNBins;
     G4int fNUsedVolumes;
     G4double fTotalVolume;
 
@@ -53,7 +60,10 @@ protected:
     G4String fVHOutFileSpec2;
     G4String fDoseElementsFileSpec1;
 
+
     void CalculateOneValue(G4int index);
+    void TallyHistogramValue(std::vector<G4double> &bins, G4double* vals, G4double value, G4double weight);
+    void TallyHistogramValue(std::vector<G4double> &bins, std::vector<G4double> &vals, G4double value, G4double weight);
 
     void PrintVHASCII(std::ostream& ofile);
     void PrintVHBinary(std::ostream& ofile);

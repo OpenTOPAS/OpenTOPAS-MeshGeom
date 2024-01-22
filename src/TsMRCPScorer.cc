@@ -2,6 +2,8 @@
 #include "TsMRCPScorer.hh"
 #include "MeshGeomTools.hh"
 
+#include "TsOutcomeModelList.hh"
+
 #include "G4Material.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4Proton.hh"
@@ -115,6 +117,16 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
         }
     }
 
+    G4String theUnitName = fPm->GetUnitOfParameter(GetFullParmName("HistogramMin"));
+	if (fReportCVolHist || fReportDVolHist) {
+		fHistogramNBins = fPm->GetIntegerParameter(GetFullParmName("HistogramBins"));
+		fHistogramMin = fPm->GetDoubleParameter(GetFullParmName("HistogramMin"), fPm->GetUnitCategory(theUnitName)) / GetUnitValue();
+		fHistogramMax = fPm->GetDoubleParameter(GetFullParmName("HistogramMax"), fPm->GetUnitCategory(theUnitName)) / GetUnitValue();
+		G4double binWidth = ( fHistogramMax - fHistogramMin ) / fHistogramNBins;
+		for (G4int i=0; i < fHistogramNBins; i++)
+			fHistogramLowerValues.push_back(fHistogramMin + i * binWidth);
+	}
+
     // // Test to check that the ids of the parameterisation match the IDs of fEvtMap/fFirstMomentMap
     // for (int i=0; i<10; i++){
     //     G4cout << G4endl;
@@ -173,7 +185,6 @@ void TsMRCPScorer::GetAppropriatelyBinnedCopyOfComponent(G4String componentName)
 	}
 
 	fNDivisions = testInLong;
-    fNBins = fNDivisions;
     G4cout << "***** Setting number of divisions " << fNDivisions << G4endl;
 
     // Ni/Nj/Nk used for output writing
@@ -353,13 +364,13 @@ void TsMRCPScorer::Output() {
             if (newMax > 0.0) {
                 fHistogramMax = newMax;
                 // Ensure bins above max so there is not overflow
-                G4double binWidth = ( fHistogramMax - fHistogramMin ) / (fHistogramBins - 2);
-                for (G4int i=0; i < fHistogramBins; i++){
+                G4double binWidth = ( fHistogramMax - fHistogramMin ) / (fHistogramNBins - 2);
+                for (G4int i=0; i < fHistogramNBins; i++){
                     fHistogramLowerValues[i] = fHistogramMin + i * binWidth;
                 }
             }
         }
-        fVolumeHistogramVolumes.resize(fHistogramBins, 0.0);
+        fVolumeHistogramVolumes.resize(fHistogramNBins, 0.0);
 
         G4double vol;
         for (G4int i = 0; i < fNDivisions; i++) {
@@ -373,13 +384,13 @@ void TsMRCPScorer::Output() {
         }
 
         // Normalize histogram
-        for (G4int i=0; i < fHistogramBins; i++){
+        for (G4int i=0; i < fHistogramNBins; i++){
             fVolumeHistogramVolumes[i] /= fTotalVolume;
         }
 
         // Calculate cumulative volume histogram
         if (fReportCVolHist) {
-            for (G4int i = fHistogramBins-1; i >= 1; i--) {
+            for (G4int i = fHistogramNBins-1; i >= 1; i--) {
                 fVolumeHistogramVolumes[i - 1] += fVolumeHistogramVolumes[i];
             }
         }
@@ -457,7 +468,7 @@ void TsMRCPScorer::Output() {
 void TsMRCPScorer::PrintVHASCII(std::ostream& ofile)
 {
 	ofile << std::setprecision(16); // for double value with 8 bytes
-	for (int j = 0; j < fHistogramBins; j++)
+	for (int j = 0; j < fHistogramNBins; j++)
 		ofile << j << ", " << fHistogramLowerValues[j] << ", " << fVolumeHistogramVolumes[j] << G4endl;
 	ofile << std::setprecision(6);
 }
@@ -465,11 +476,11 @@ void TsMRCPScorer::PrintVHASCII(std::ostream& ofile)
 
 void TsMRCPScorer::PrintVHBinary(std::ostream& ofile)
 {
-	G4double* data = new G4double[fHistogramBins];
-    for (int j = 0; j < fHistogramBins; j++){
+	G4double* data = new G4double[fHistogramNBins];
+    for (int j = 0; j < fHistogramNBins; j++){
         data[j] = fVolumeHistogramVolumes[j];
     }
-	ofile.write( (char*) data, fHistogramBins*sizeof(G4double));
+	ofile.write( (char*) data, fHistogramNBins*sizeof(G4double));
 	delete[] data;
 }
 
@@ -498,4 +509,33 @@ void TsMRCPScorer::CalculateOneValue(G4int idx)
 {
     fCountInBin = fCountMap[idx];
     fSum = fFirstMomentMap[idx] / GetUnitValue();
+}
+
+void TsMRCPScorer::TallyHistogramValue(std::vector<G4double> &bins, G4double* vals, G4double value, G4double weight){
+    auto vecIt = std::lower_bound(bins.begin(),
+                                  bins.end(),
+                                  value);
+    int idx;
+    if (vecIt != bins.end()) {
+        idx = std::distance(bins.begin(), vecIt);
+    }
+    else {
+        idx = bins.size()-1;
+    }
+    vals[idx] += weight;
+}
+
+void TsMRCPScorer::TallyHistogramValue(std::vector<G4double> &bins, std::vector<G4double> &vals,
+                                          G4double value, G4double weight){
+    auto vecIt = std::lower_bound(bins.begin(),
+                                  bins.end(),
+                                  value);
+    int idx;
+    if (vecIt != bins.end()) {
+        idx = std::distance(bins.begin(), vecIt);
+    }
+    else {
+        idx = bins.size()-1;
+    }
+    vals[idx] += weight;
 }
