@@ -55,9 +55,9 @@ protected:
 
     void CalculateOneValue(G4int index);
 
-    // TODO: maybe write header files
     void PrintVHASCII(std::ostream& ofile);
     void PrintVHBinary(std::ostream& ofile);
+    void PrintVHHeader(std::ostream& ofile);
 
 private:
     G4int fCountInBin;

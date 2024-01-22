@@ -473,6 +473,27 @@ void TsMRCPScorer::PrintVHBinary(std::ostream& ofile)
 	delete[] data;
 }
 
+void TsMRCPScorer::PrintVHHeader(std::ostream& ofile)
+{
+    ofile << "# TOPAS Version: " << fPm->GetTOPASVersion() << G4endl;
+    ofile << "# Parameter File: " << fPm->GetTopParameterFileSpec() << G4endl;
+	ofile << "# Results for Scorer: " << GetNameWithSplitId() << G4endl;
+
+	if (fReportCVolHist)
+		ofile << "# Cumulative Volume Histogram over number of voxels: " << fNDivisions << G4endl;
+    else if (fReportDVolHist)
+		ofile << "# Differential Volume Histogram over number of voxels: " << fNDivisions << G4endl;
+
+	ofile << "# BinNumber, LowerLimit of " << fQuantity;
+
+	if (GetUnit()!="")
+		ofile << " ( " << GetUnit() << " )";
+	else if (fScm->AddUnitEvenIfItIsOne())
+		ofile << " ( 1 )";
+
+	ofile << ", Value" << G4endl;
+}
+
 void TsMRCPScorer::CalculateOneValue(G4int idx)
 {
     fCountInBin = fCountMap[idx];
