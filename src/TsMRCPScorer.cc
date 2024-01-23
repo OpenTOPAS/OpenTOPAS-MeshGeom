@@ -13,7 +13,7 @@
 
 TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 		G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
-		: TsVBinnedScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer), fEmCalculator(), fUseMaterialFilter(false), fReportDoseByTet(false), fNUsedVolumes(0), fTotalVolume(0.0), fHistogramAutoMax(true)
+		: TsVBinnedScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer), fEmCalculator(), fUseMaterialFilter(false), fReportDoseByTet(false), fNUsedVolumes(0), fTotalVolume(0.0), fHistogramAutoMax(true), fRestoreResultsFromFile(false)
 {
 	SetUnit("Gy");
 
