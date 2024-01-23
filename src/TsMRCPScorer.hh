@@ -23,6 +23,8 @@ public:
 
 	~TsMRCPScorer();
 
+    void PostConstructor();
+
 protected:
     TsOutcomeModelList* fOm;
 

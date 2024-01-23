@@ -129,3 +129,13 @@ void TsMRCP::PrintPhantomInformation()
 {
 	fTetData->PrintMaterialInformation();
 }
+
+G4int TsMRCP::GetDivisionCount(G4int dim){
+    if (dim == 0){
+        return fTetData->GetNumTetrahedron();
+    }
+    else {
+        return 1;
+    }
+}
+

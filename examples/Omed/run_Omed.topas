@@ -92,6 +92,7 @@ s:So/Proton/BeamAngularDistribution  = "None" # None, Flat or Gaussian
 # Settings
 # Order tracker:                        1234567890
 ic:So/Proton/NumberOfHistoriesInRun  = 1000
+i:Ts/Seed                            = 42
 i:Ts/ShowHistoryCountAtInterval      = 10
 i:Ts/NumberOfThreads                 = 12
 b:Ts/ShowCPUTime                     = "True"

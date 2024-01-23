@@ -17,6 +17,7 @@ public:
 
 	std::map<G4int, G4Material*>	GetMaterialMap()	{ return fTetData->GetMaterialMap(); }
 	std::map<G4int, G4String>		GetOrganNameMap() 	{ return fTetData->GetOrganNameMap(); }
+    G4int GetDivisionCount(G4int dim);
 
 private:
 	G4String fPhantomDirectory;

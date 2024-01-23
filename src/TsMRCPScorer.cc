@@ -146,7 +146,6 @@ void TsMRCPScorer::GetAppropriatelyBinnedCopyOfComponent(G4String componentName)
 {
     // Overwriting method of TsVScorer and TsVBinnedScorer to properly set number of divisions
     // Could possibly be accomplished through tscomponent::getdivisioncount method
-
 	G4String componentNameLower = componentName;
 #if GEANT4_VERSION_MAJOR >= 11
 	G4StrUtil::to_lower(componentNameLower);
@@ -175,16 +174,7 @@ void TsMRCPScorer::GetAppropriatelyBinnedCopyOfComponent(G4String componentName)
 		fPm->AbortSession(1);
 	}
 
-	G4long testInLong = fmrcpParam->GetNumTetrahedron();
-
-	if (testInLong > INT_MAX) {
-		G4cerr << "Component " << GetName() << " has too many divisions." << G4endl;
-		G4cerr << "Maximum allowed total number is " << INT_MAX << G4endl;
-		G4cerr << "Number of Divisions was found to be: " << testInLong << G4endl;
-		fPm->AbortSession(1);
-	}
-
-	fNDivisions = testInLong;
+	fNDivisions = fmrcpParam->GetNumTetrahedron();
     G4cout << "***** Setting number of divisions " << fNDivisions << G4endl;
 
     // Ni/Nj/Nk used for output writing
@@ -538,4 +528,15 @@ void TsMRCPScorer::TallyHistogramValue(std::vector<G4double> &bins, std::vector<
         idx = bins.size()-1;
     }
     vals[idx] += weight;
+}
+
+void TsMRCPScorer::PostConstructor(){
+    TsVBinnedScorer::PostConstructor();
+
+    // Resize all maps to the number of tetrahedra
+    fSecondMomentMap.resize(fNDivisions, 0.0);
+    fCountMap.resize(fNDivisions, 0);
+    fMinMap.resize(fNDivisions, 0.0);
+    fMaxMap.resize(fNDivisions, 0.0);
+    fFirstMomentMap.resize(fNDivisions, 0.0);
 }
