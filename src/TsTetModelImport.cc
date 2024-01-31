@@ -33,7 +33,7 @@ void TsTetModelImport::DataRead(G4String eleFile, G4String nodeFile)
 		// Exception for the case there is no *.node file
 		G4Exception("TsTetModelImport::DataRead", "", FatalErrorInArgument, G4String(" There is no " + phantomDataPath + "/" + nodeFile).c_str());
 	}
-	G4cout << "Opening TetGEN node (vertex points: x y z) file '" << nodeFile << "'" << G4endl;
+	G4cout << "Opening TETGEN node (vertex points: x y z) file '" << nodeFile << "'" << G4endl;
     G4cout << (phantomDataPath + "/" + nodeFile).c_str() << G4endl;
 
 	G4int numVertex;

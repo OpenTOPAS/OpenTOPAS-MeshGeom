@@ -9,7 +9,7 @@ sv:Ph/Default/LayeredMassGeometryWorlds = 1 "Scoring"
 sv:Ph/Default/Modules                   = 1 "g4em-standard_opt3"
 
 # Materials should be set by material file
-s:Ge/MeshPhantom/Type             = "TsMRCP"
+s:Ge/MeshPhantom/Type             = "TsTetGeom"
 s:Ge/MeshPhantom/Parent           = "World"
 s:Ge/MeshPhantom/PhantomDirectory = "./"
 s:Ge/MeshPhantom/NodeFile         = "Omed.node"
@@ -50,7 +50,7 @@ s:Sc/GridScore/OutputType                = "csv"
 s:Sc/GridScore/IfOutputFileAlreadyExists = "Overwrite"
 sv:Sc/GridScore/Report                   = 2 "sum" "count_in_bin"
 
-s:Sc/MeshScorer/Quantity                  = "TsMRCPScorer"
+s:Sc/MeshScorer/Quantity                  = "TsTetGeomScorer"
 s:Sc/MeshScorer/Component                 = "MeshPhantom"
 s:Sc/MeshScorer/OutputFile                = "OmedMeshScorer"
 s:Sc/MeshScorer/OutputType                = "csv"

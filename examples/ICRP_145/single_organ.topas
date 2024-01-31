@@ -1,6 +1,6 @@
 includeFile = phantom_geometry.topas
 
-s:Sc/liver_dDVH/Quantity                  = "TsMRCPScorer"
+s:Sc/liver_dDVH/Quantity                  = "TsTetGeomScorer"
 s:Sc/liver_dDVH/Component                 = "MRCPPhantom"
 sv:Sc/liver_dDVH/ICRPMaterials            = 1 "Liver"
 s:Sc/liver_dDVH/OutputFile                = "DoseLiver_dDVH"
@@ -13,7 +13,7 @@ d:Sc/liver_dDVH/HistogramMin              = 0 Gy
 d:Sc/liver_dDVH/HistogramMax              = 0.001 Gy
 b:Sc/liver_dDVH/HistogramAutoMax          = "true"
 
-s:Sc/liver_cDVH/Quantity                  = "TsMRCPScorer"
+s:Sc/liver_cDVH/Quantity                  = "TsTetGeomScorer"
 s:Sc/liver_cDVH/Component                 = "MRCPPhantom"
 sv:Sc/liver_cDVH/ICRPMaterials            = 1 "Liver"
 s:Sc/liver_cDVH/OutputFile                = "DoseLiver_cDVH"

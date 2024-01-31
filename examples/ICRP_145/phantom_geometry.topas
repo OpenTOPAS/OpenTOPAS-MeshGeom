@@ -6,7 +6,7 @@ b:Ge/World/Invisible                    = "true"
 s:Ge/World/Material                     = "Vacuum"
 
 # Phantom
-s:Ge/MRCPPhantom/Type					= "TsMRCP"
+s:Ge/MRCPPhantom/Type					= "TsTetGeom"
 s:Ge/MRCPPhantom/Parent					= "World"
 s:Ge/MRCPPhantom/Material           	= "G4_WATER"
 # Set directory containing .ele/.node/.material files
