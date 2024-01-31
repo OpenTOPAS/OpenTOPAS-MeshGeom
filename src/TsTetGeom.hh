@@ -1,17 +1,17 @@
-#ifndef TsMRCP_hh
-#define TsMRCP_hh
+#ifndef TsTetGeom_hh
+#define TsTetGeom_hh
 
 #include "TsVGeometryComponent.hh"
-#include "TsTETModelImport.hh"
-#include "TsMRCPParameterization.hh"
+#include "TsTetModelImport.hh"
+#include "TsTetGeomParameterization.hh"
 
 
-class TsMRCP : public TsVGeometryComponent
+class TsTetGeom : public TsVGeometryComponent
 {
 public:
-	TsMRCP(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager* mM, TsGeometryManager* gM,
+	TsTetGeom(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager* mM, TsGeometryManager* gM,
 			  TsVGeometryComponent* parentComponent, G4VPhysicalVolume* parentVolume, G4String& name);
-	virtual ~TsMRCP();
+	virtual ~TsTetGeom();
 	G4VPhysicalVolume* Construct();
 	void PrintPhantomInformation();
 
@@ -27,8 +27,8 @@ private:
 	G4String fMaterialFile;
 	G4String fEleFile;
 
-    TsTETModelImport* fTetData;
-    TsMRCPParameterization* fMRCPParam;
+    TsTetModelImport* fTetData;
+    TsTetGeomParameterization* fTetGeomParam;
 	G4ThreeVector fPhantomSize;
 	G4ThreeVector fPhantomBoxMin, fPhantomBoxMax;
 	G4int fNOfTetrahedrons;

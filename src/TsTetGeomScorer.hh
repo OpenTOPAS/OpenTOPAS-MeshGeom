@@ -1,27 +1,27 @@
-#ifndef TsMRCPScorer_hh
-#define TsMRCPScorer_hh
+#ifndef TsTetGeomScorer_hh
+#define TsTetGeomScorer_hh
 
 #include "TsParameterManager.hh"
 #include "TsScoringManager.hh"
 #include "TsOutcomeModelList.hh"
-#include "TsMRCP.hh"
-#include "TsMRCPParameterization.hh"
+#include "TsTetGeom.hh"
+#include "TsTetGeomParameterization.hh"
 #include "TsVBinnedScorer.hh"
 #include "TsGeometryManager.hh"
 
 #include "G4EmCalculator.hh"
 
-class TsMRCPScorer : public TsVBinnedScorer
+class TsTetGeomScorer : public TsVBinnedScorer
 {
 public:
-	TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
+	TsTetGeomScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 			G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer);
     void GetAppropriatelyBinnedCopyOfComponent(G4String componentName);
 
 	G4bool ProcessHits(G4Step*, G4TouchableHistory*);
     void RestoreResultsFromFile();
 
-	~TsMRCPScorer();
+	~TsTetGeomScorer();
 
     void PostConstructor();
 
@@ -40,7 +40,7 @@ protected:
     G4int fNDVHsToSum;
 
 	G4EmCalculator fEmCalculator;
-    TsMRCPParameterization* fmrcpParam;
+    TsTetGeomParameterization* fmrcpParam;
 
     G4bool fUseMaterialFilter;
     G4bool fReportCVolHist;

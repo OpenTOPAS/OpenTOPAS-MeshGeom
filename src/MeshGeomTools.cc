@@ -1,4 +1,4 @@
-// Extra Class for use by TsMRCP
+// Extra Class for use by TsTetGeom
 #include <MeshGeomTools.hh>
 
 #include <algorithm>

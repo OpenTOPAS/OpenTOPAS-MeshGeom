@@ -1,5 +1,5 @@
-// Scorer for TsMRCPScorer
-#include "TsMRCPScorer.hh"
+// Scorer for TsTetGeomScorer
+#include "TsTetGeomScorer.hh"
 #include "MeshGeomTools.hh"
 
 #include "TsOutcomeModelList.hh"
@@ -11,7 +11,7 @@
 #include "G4String.hh"
 #include "G4VPVParameterisation.hh"
 
-TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
+TsTetGeomScorer::TsTetGeomScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 		G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 		: TsVBinnedScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer), fEmCalculator(), fUseMaterialFilter(false), fReportDoseByTet(false), fNUsedVolumes(0), fTotalVolume(0.0), fHistogramAutoMax(true), fRestoreResultsFromFile(false)
 {
@@ -71,13 +71,13 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
         fDoseElementsFileSpec1 = ConfirmCanOpen(fOutFileName+"_DoseByTet", ".csv", increment);
     }
 
-    // Get reference to MRCP paramterization. Assumes phantom name is hardcoded and that
+    // Get reference to TetGeom paramterization. Assumes phantom name is hardcoded and that
     // we have only one phantom in the geometry
     G4String componentName = fPm->GetStringParameter(GetFullParmName("Component"));
     G4String volumeName = componentName + "/WholePhantom";
     TsVGeometryComponent* component = fGm->GetComponent(componentName);
     G4VPhysicalVolume* physVol = component->GetPhysicalVolume(volumeName);
-    fmrcpParam = dynamic_cast<TsMRCPParameterization*>(physVol->GetParameterisation());
+    fmrcpParam = dynamic_cast<TsTetGeomParameterization*>(physVol->GetParameterisation());
 
 	// Get ICRP Material names to use as filters and precompute boolean map
 	if (fPm->ParameterExists(GetFullParmName("ICRPMaterials"))){
@@ -112,7 +112,7 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
         }
         else {
             G4cerr << "Topas is exiting due to a serious error in scoring." << G4endl;
-            G4cerr << "To restore results from file for the TsMRCP scorer DVHsToSum must be set." << G4endl;
+            G4cerr << "To restore results from file for the TsTetGeom scorer DVHsToSum must be set." << G4endl;
             fPm->AbortSession(1);
         }
     }
@@ -142,7 +142,7 @@ TsMRCPScorer::TsMRCPScorer(TsParameterManager* pM, TsMaterialManager* mM, TsGeom
     // }
 }
 
-void TsMRCPScorer::GetAppropriatelyBinnedCopyOfComponent(G4String componentName)
+void TsTetGeomScorer::GetAppropriatelyBinnedCopyOfComponent(G4String componentName)
 {
     // Overwriting method of TsVScorer and TsVBinnedScorer to properly set number of divisions
     // Could possibly be accomplished through tscomponent::getdivisioncount method
@@ -194,9 +194,9 @@ void TsMRCPScorer::GetAppropriatelyBinnedCopyOfComponent(G4String componentName)
 	fDetector = fScm->GetDetector(fComponentName, this);
 }
 
-TsMRCPScorer::~TsMRCPScorer() {}
+TsTetGeomScorer::~TsTetGeomScorer() {}
 
-G4bool TsMRCPScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool TsTetGeomScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
 	if (!fIsActive)
 	{
@@ -256,7 +256,7 @@ G4bool TsMRCPScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	return false;
 }
 
-void TsMRCPScorer::RestoreResultsFromFile()
+void TsTetGeomScorer::RestoreResultsFromFile()
 {
     fRestoreResultsFromFile = true;
     MeshGeomTools::AbsDoseVolumeHistogram dvh;
@@ -299,7 +299,7 @@ void TsMRCPScorer::RestoreResultsFromFile()
     std::cout << std::endl;
 }
 
-void TsMRCPScorer::BuildMaterialMap(){
+void TsTetGeomScorer::BuildMaterialMap(){
     // Precompute a boolean map over all materials in materials file
     for (auto &mat: fmrcpParam->GetMaterialNames()){
         fMaterialMap[mat] = false;
@@ -312,7 +312,7 @@ void TsMRCPScorer::BuildMaterialMap(){
     }
 }
 
-G4bool TsMRCPScorer::ScoreMaterialFlag(const G4String &mat){
+G4bool TsTetGeomScorer::ScoreMaterialFlag(const G4String &mat){
     if (fUseMaterialFilter){
         return fMaterialMap[mat];
     }
@@ -321,7 +321,7 @@ G4bool TsMRCPScorer::ScoreMaterialFlag(const G4String &mat){
     }
 }
 
-void TsMRCPScorer::Output() {
+void TsTetGeomScorer::Output() {
     // Skip histogram calculation if we have restored results from file
     if (fRestoreResultsFromFile){
         G4cout << "Using restored histogram values for outcome model." << G4endl;
@@ -451,11 +451,11 @@ void TsMRCPScorer::Output() {
         }
     }
 
-    G4cout << "End of TsMRCPScorer output for Scorer: " << GetName() << G4endl;
+    G4cout << "End of TsTetGeomScorer output for Scorer: " << GetName() << G4endl;
 }
 
 
-void TsMRCPScorer::PrintVHASCII(std::ostream& ofile)
+void TsTetGeomScorer::PrintVHASCII(std::ostream& ofile)
 {
 	ofile << std::setprecision(16); // for double value with 8 bytes
 	for (int j = 0; j < fHistogramNBins; j++)
@@ -464,7 +464,7 @@ void TsMRCPScorer::PrintVHASCII(std::ostream& ofile)
 }
 
 
-void TsMRCPScorer::PrintVHBinary(std::ostream& ofile)
+void TsTetGeomScorer::PrintVHBinary(std::ostream& ofile)
 {
 	G4double* data = new G4double[fHistogramNBins];
     for (int j = 0; j < fHistogramNBins; j++){
@@ -474,7 +474,7 @@ void TsMRCPScorer::PrintVHBinary(std::ostream& ofile)
 	delete[] data;
 }
 
-void TsMRCPScorer::PrintVHHeader(std::ostream& ofile)
+void TsTetGeomScorer::PrintVHHeader(std::ostream& ofile)
 {
     ofile << "# TOPAS Version: " << fPm->GetTOPASVersion() << G4endl;
     ofile << "# Parameter File: " << fPm->GetTopParameterFileSpec() << G4endl;
@@ -495,13 +495,13 @@ void TsMRCPScorer::PrintVHHeader(std::ostream& ofile)
 	ofile << ", Value" << G4endl;
 }
 
-void TsMRCPScorer::CalculateOneValue(G4int idx)
+void TsTetGeomScorer::CalculateOneValue(G4int idx)
 {
     fCountInBin = fCountMap[idx];
     fSum = fFirstMomentMap[idx] / GetUnitValue();
 }
 
-void TsMRCPScorer::TallyHistogramValue(std::vector<G4double> &bins, G4double* vals, G4double value, G4double weight){
+void TsTetGeomScorer::TallyHistogramValue(std::vector<G4double> &bins, G4double* vals, G4double value, G4double weight){
     auto vecIt = std::lower_bound(bins.begin(),
                                   bins.end(),
                                   value);
@@ -515,7 +515,7 @@ void TsMRCPScorer::TallyHistogramValue(std::vector<G4double> &bins, G4double* va
     vals[idx] += weight;
 }
 
-void TsMRCPScorer::TallyHistogramValue(std::vector<G4double> &bins, std::vector<G4double> &vals,
+void TsTetGeomScorer::TallyHistogramValue(std::vector<G4double> &bins, std::vector<G4double> &vals,
                                           G4double value, G4double weight){
     auto vecIt = std::lower_bound(bins.begin(),
                                   bins.end(),
@@ -530,7 +530,7 @@ void TsMRCPScorer::TallyHistogramValue(std::vector<G4double> &bins, std::vector<
     vals[idx] += weight;
 }
 
-void TsMRCPScorer::PostConstructor(){
+void TsTetGeomScorer::PostConstructor(){
     TsVBinnedScorer::PostConstructor();
 
     // Resize all maps to the number of tetrahedra

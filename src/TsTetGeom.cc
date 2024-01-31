@@ -1,13 +1,13 @@
-// Component for TsMRCP
+// Component for TsTetGeom
 #include "TsParameterManager.hh"
 #include "G4Box.hh"
-#include "TsMRCPParameterization.hh"
+#include "TsTetGeomParameterization.hh"
 
-#include "TsMRCP.hh"
+#include "TsTetGeom.hh"
 
 using namespace std;
 
-TsMRCP::TsMRCP(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager* mM, TsGeometryManager* gM,
+TsTetGeom::TsTetGeom(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager* mM, TsGeometryManager* gM,
 		 TsVGeometryComponent* parentComponent, G4VPhysicalVolume* parentVolume, G4String& name) :
 				TsVGeometryComponent(pM, eM, mM, gM, parentComponent, parentVolume, name)
 {
@@ -52,8 +52,8 @@ TsMRCP::TsMRCP(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager
 
         G4String age = fAge;
         G4String phantomName = "MRCP_" + fAge + fSex;
-        // Get data using TsTETModelImport
-        fTetData = new TsTETModelImport(fPhantomDirectory, phantomName);
+        // Get data using TsTetModelImport
+        fTetData = new TsTetModelImport(fPhantomDirectory, phantomName);
 
     }
     else if (fPm->ParameterExists(GetFullParmName("PhantomDirectory")) &&
@@ -65,7 +65,7 @@ TsMRCP::TsMRCP(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager
         fNodeFile = fPm->GetStringParameter(GetFullParmName("NodeFile"));
         fMaterialFile = fPm->GetStringParameter(GetFullParmName("MaterialFile"));
         fEleFile = fPm->GetStringParameter(GetFullParmName("EleFile"));
-        fTetData = new TsTETModelImport(fPhantomDirectory, fNodeFile, fMaterialFile, fEleFile);
+        fTetData = new TsTetModelImport(fPhantomDirectory, fNodeFile, fMaterialFile, fEleFile);
     }
     else {
         G4cerr << "Must specify either (PhantomDirectory, Age, Sex) " << G4endl;
@@ -81,9 +81,9 @@ TsMRCP::TsMRCP(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager
 	fNOfTetrahedrons = fTetData->GetNumTetrahedron();
 }
 
-TsMRCP::~TsMRCP() {}
+TsTetGeom::~TsTetGeom() {}
 
-G4VPhysicalVolume* TsMRCP::Construct()
+G4VPhysicalVolume* TsTetGeom::Construct()
 {
 	BeginConstruction();
 
@@ -113,24 +113,24 @@ G4VPhysicalVolume* TsMRCP::Construct()
 	G4LogicalVolume* tetLogic = CreateLogicalVolume("TetLogic", material, tetraSolid);
 
 	// Physical volume (phantom) constructed as parameterized geometry
-    TsMRCPParameterization* fMRCPParam = new TsMRCPParameterization(fTetData);
-	G4VPhysicalVolume* phantom = CreatePhysicalVolume("WholePhantom", tetLogic, fEnvelopePhys, kUndefined, fNOfTetrahedrons, fMRCPParam);
+    TsTetGeomParameterization* fTetGeomParam = new TsTetGeomParameterization(fTetData);
+	G4VPhysicalVolume* phantom = CreatePhysicalVolume("WholePhantom", tetLogic, fEnvelopePhys, kUndefined, fNOfTetrahedrons, fTetGeomParam);
 
 	InstantiateChildren();
     PrintPhantomInformation();
 
-    // Initialize navigator in TsMRCPParameterization for querying material at a point
-    fMRCPParam->InitializeNavigator(this->GetWorldName());
+    // Initialize navigator in TsTetGeomParameterization for querying material at a point
+    fTetGeomParam->InitializeNavigator(this->GetWorldName());
 
 	return fEnvelopePhys;
 }
 
-void TsMRCP::PrintPhantomInformation()
+void TsTetGeom::PrintPhantomInformation()
 {
 	fTetData->PrintMaterialInformation();
 }
 
-G4int TsMRCP::GetDivisionCount(G4int dim){
+G4int TsTetGeom::GetDivisionCount(G4int dim){
     if (dim == 0){
         return fTetData->GetNumTetrahedron();
     }

@@ -1,7 +1,7 @@
-// Extra Class for TsMRCP
-#include "TsTETModelImport.hh"
+// Extra Class for TsTetGeom
+#include "TsTetModelImport.hh"
 
-TsTETModelImport::TsTETModelImport(G4String path, G4String phantomName)
+TsTetModelImport::TsTetModelImport(G4String path, G4String phantomName)
 {
     phantomDataPath = path;
     G4String eleFile = phantomName + ".ele";
@@ -11,16 +11,16 @@ TsTETModelImport::TsTETModelImport(G4String path, G4String phantomName)
     DataRead(eleFile, nodeFile);
 }
 
-TsTETModelImport::TsTETModelImport(G4String path, G4String nodeFile, G4String materialFile, G4String eleFile)
+TsTetModelImport::TsTetModelImport(G4String path, G4String nodeFile, G4String materialFile, G4String eleFile)
 {
     phantomDataPath = path;
     MaterialRead(materialFile);
     DataRead(eleFile, nodeFile);
 }
 
-TsTETModelImport::~TsTETModelImport() {}
+TsTetModelImport::~TsTetModelImport() {}
 
-void TsTETModelImport::DataRead(G4String eleFile, G4String nodeFile)
+void TsTetModelImport::DataRead(G4String eleFile, G4String nodeFile)
 {
 	G4String tempStr;
 	G4int tempInt;
@@ -31,9 +31,9 @@ void TsTETModelImport::DataRead(G4String eleFile, G4String nodeFile)
 	if (!ifpNode.is_open())
 	{
 		// Exception for the case there is no *.node file
-		G4Exception("TsTETModelImport::DataRead", "", FatalErrorInArgument, G4String(" There is no " + phantomDataPath + "/" + nodeFile).c_str());
+		G4Exception("TsTetModelImport::DataRead", "", FatalErrorInArgument, G4String(" There is no " + phantomDataPath + "/" + nodeFile).c_str());
 	}
-	G4cout << "Opening TETGEN node (vertex points: x y z) file '" << nodeFile << "'" << G4endl;
+	G4cout << "Opening TetGEN node (vertex points: x y z) file '" << nodeFile << "'" << G4endl;
     G4cout << (phantomDataPath + "/" + nodeFile).c_str() << G4endl;
 
 	G4int numVertex;
@@ -78,7 +78,7 @@ void TsTETModelImport::DataRead(G4String eleFile, G4String nodeFile)
 	if (!ifpEle.is_open())
 	{
 		// Exception for the case there is no *.ele file
-		G4Exception("TsTETModelImport::DataRead", "", FatalErrorInArgument, G4String(" There is no " + eleFile).c_str());
+		G4Exception("TsTetModelImport::DataRead", "", FatalErrorInArgument, G4String(" There is no " + eleFile).c_str());
 	}
 	G4cout << "Opening TETGEN elements (tetrahedron with node No.) file '" << eleFile << "'" << G4endl;
 	G4cout << (phantomDataPath + "/" + eleFile).c_str() << G4endl;
@@ -141,12 +141,12 @@ void TsTETModelImport::DataRead(G4String eleFile, G4String nodeFile)
         if (!materialMap.count(idx)) {
             std::ostringstream oss;
             oss << "Material file did not define material number:" << idx << " found in .ele file";
-            G4Exception("TsTETModelImport::DataRead", "", FatalErrorInArgument, G4String(oss.str()).c_str());
+            G4Exception("TsTetModelImport::DataRead", "", FatalErrorInArgument, G4String(oss.str()).c_str());
         }
     }
 }
 
-void TsTETModelImport::MaterialRead(G4String materialFile)
+void TsTetModelImport::MaterialRead(G4String materialFile)
 {
 	// Read mateiral file (*.material)
 	std::ifstream ifpMat;
@@ -155,7 +155,7 @@ void TsTETModelImport::MaterialRead(G4String materialFile)
 	if (!ifpMat.is_open())
 	{
 		// Exception for the case there is no *.material file
-		G4Exception("TsTETModelImport::MaterialRead", "", FatalErrorInArgument, G4String(" There is no " + materialFile).c_str());
+		G4Exception("TsTetModelImport::MaterialRead", "", FatalErrorInArgument, G4String(" There is no " + materialFile).c_str());
 	}
 	G4cout << "Opening material file '" << materialFile << "'" << G4endl;
 	G4cout << (phantomDataPath + "/" + materialFile).c_str() << G4endl;
@@ -218,7 +218,7 @@ void TsTETModelImport::MaterialRead(G4String materialFile)
     }
 }
 
-void TsTETModelImport::ColorRead()
+void TsTetModelImport::ColorRead()
 {
 	// Read color data file
 	std::ifstream ifpColor;
@@ -227,7 +227,7 @@ void TsTETModelImport::ColorRead()
 	if (!ifpColor.is_open())
 	{
 		// Exception for the case there is no color.dat file
-		G4Exception("TsTETModelImport::DataRead", "", FatalErrorInArgument, G4String("Color data file was not found").c_str());
+		G4Exception("TsTetModelImport::DataRead", "", FatalErrorInArgument, G4String("Color data file was not found").c_str());
 	}
 	G4cout << "Opening color data file 'colour.dat" << G4endl;
 
@@ -239,7 +239,7 @@ void TsTETModelImport::ColorRead()
 	ifpColor.close();
 }
 
-void TsTETModelImport::PrintMaterialInformation()
+void TsTetModelImport::PrintMaterialInformation()
 {
 	// Print the overall information for each organ
 	G4cout << G4endl
@@ -294,6 +294,6 @@ void TsTETModelImport::PrintMaterialInformation()
 	}
 }
 
-std::pair<G4ThreeVector, G4ThreeVector> TsTETModelImport::GetMaterialExtent(const G4String material) {
+std::pair<G4ThreeVector, G4ThreeVector> TsTetModelImport::GetMaterialExtent(const G4String material) {
     return materialExtentMap[organNameToMatID[material]];
 }

@@ -1,5 +1,5 @@
-#ifndef TsTETModelImport_hh
-#define TsTETModelImport_hh
+#ifndef TsTetModelImport_hh
+#define TsTetModelImport_hh
 
 #include "G4SystemOfUnits.hh"
 #include "G4Tet.hh"
@@ -8,12 +8,12 @@
 #include "G4Colour.hh"
 #include "G4NistManager.hh"
 
-class TsTETModelImport
+class TsTetModelImport
 {
 public:
-	TsTETModelImport(G4String path, G4String phantomName);
-	TsTETModelImport(G4String path, G4String nodeFile, G4String materialFile, G4String eleFile);
-	~TsTETModelImport();
+	TsTetModelImport(G4String path, G4String phantomName);
+	TsTetModelImport(G4String path, G4String nodeFile, G4String materialFile, G4String eleFile);
+	~TsTetModelImport();
 
 	// Get methods
 	G4String		GetPhantomName()			{ return phantomName; }

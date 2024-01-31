@@ -1,18 +1,18 @@
-#ifndef TsMRCPParameterization_hh
-#define TsMRCPParameterization_hh
+#ifndef TsTetGeomParameterization_hh
+#define TsTetGeomParameterization_hh
 
-#include "TsTETModelImport.hh"
+#include "TsTetModelImport.hh"
 
 #include "G4VPVParameterisation.hh"
 #include "G4Tet.hh"
 
 #include "G4Navigator.hh"
 
-class TsMRCPParameterization : public G4VPVParameterisation
+class TsTetGeomParameterization : public G4VPVParameterisation
 {
 public:
-	TsMRCPParameterization(TsTETModelImport* tetData);
-	virtual ~TsMRCPParameterization();
+	TsTetGeomParameterization(TsTetModelImport* tetData);
+	virtual ~TsTetGeomParameterization();
     void InitializeNavigator(const G4String world);
 
 	G4VSolid* ComputeSolid(const G4int copyNo, G4VPhysicalVolume* );
@@ -27,7 +27,7 @@ public:
     G4String GetMaterialAtPoint(const G4ThreeVector point);
 
 private:
-	TsTETModelImport* fTetData = NULL;
+	TsTetModelImport* fTetData = NULL;
     G4Navigator* fNavigator;
 };
 
