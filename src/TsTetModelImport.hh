@@ -30,6 +30,7 @@ public:
 	G4ThreeVector	GetPhantomBoxMax()			{ return boundingBoxMax; }
 	std::map<G4int, G4Material*>	GetMaterialMap()	{ return materialMap; }
 	std::map<G4int, G4String>		GetOrganNameMap() 	{ return organNameMap; }
+	std::map<G4String, G4int>		GetOrganNameToMatIDMap() 	{ return organNameToMatID; }
 
     std::pair<G4ThreeVector, G4ThreeVector>	GetMaterialExtent(const G4String material);
 	void PrintMaterialInformation();

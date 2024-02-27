@@ -62,3 +62,7 @@ G4String TsTetGeomParameterization::GetMaterialAtPoint(const G4ThreeVector point
     G4VPhysicalVolume* volume = fNavigator->LocateGlobalPointAndSetup(point);
     return fTetData->GetMaterial(fTetData->GetMaterialIndex(volume->GetCopyNo()))->GetName();
 }
+
+G4double TsTetGeomParameterization::GetMaterialMass(const G4String material){
+    return fTetData->GetMassMap()[fTetData->GetOrganNameToMatIDMap()[material]];
+}

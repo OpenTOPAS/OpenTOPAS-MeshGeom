@@ -25,6 +25,7 @@ public:
     std::pair<G4ThreeVector, G4ThreeVector> GetMaterialExtent(const G4String material);
     std::vector<G4String>  GetMaterialNames();
     G4String GetMaterialAtPoint(const G4ThreeVector point);
+    G4double GetMaterialMass(const G4String material);
 
 private:
 	TsTetModelImport* fTetData = NULL;
