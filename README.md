@@ -17,8 +17,9 @@ Authors:
 # Loading mesh geometries
 Currently only the .ele/.node/.material format of tetrahedral meshes is supported where the file formats of ICRP 145 are followed.
 ## MRCP Phantoms
-Phantoms need to be defined as geometry components in the parameter file (*Type="TsMRCP"*), and the directory where the files .node, .ele and .material provided by IRCP are located needs to be specified (see example "15F_SOBP_Liver.txt").
-
+Phantoms need to be defined as geometry components in the parameter file (*Type="TsMRCP"*), and the directory where the files .node, .ele and .material provided by IRCP are located needs to be specified (see example "15F_SOBP_Liver.txt"). The mesh phantom geometries can be downloaded from the [ICRP website](https://www.icrp.org/publication.asp?id=ICRP%20Publication%20145). 
+## Omed Phantom
+Included in the `examples` folder is a coarse mesh geometry phantom named Omed (demo backwards). Visualization of the ICRP phantoms is extremely slow in the TOPAS GUI, and not recommended for checking geometry setups. Omed is oriented in the same direction as the ICRP 145 phantoms with a floating "R" for a right arm and "L" for left arm.
 ## Other Tetrahedral Meshes
 Can be defined using the specification of file paths for each file e.g.
 
