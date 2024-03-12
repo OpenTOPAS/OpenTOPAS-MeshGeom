@@ -1,6 +1,6 @@
 includeFile = phantom_geometry.topas
 
-s:Sc/brain/Quantity                  = "TsMRCPScorer"
+s:Sc/brain/Quantity                  = "TsTetGeomScorer"
 s:Sc/brain/Component                 = "MRCPPhantom"
 sv:Sc/brain/ICRPMaterials            = 1 "Brain" 
 s:Sc/brain/OutputFile                = "Dose_brain"
@@ -12,7 +12,7 @@ d:Sc/brain/HistogramMin                   = 0 Gy
 d:Sc/brain/HistogramMax                   = 0.001 Gy
 b:Sc/brain/HistogramOutputAutoMax         = "True"
 
-s:Sc/breast/Quantity                  = "TsMRCPScorer"
+s:Sc/breast/Quantity                  = "TsTetGeomScorer"
 s:Sc/breast/Component                 = "MRCPPhantom"
 sv:Sc/breast/ICRPMaterials            = 4 "Breast_left_adipose_tissue" "Breast_left_glandular_tissue" "Breast_right_adipose_tissue" "Breast_right_glandular_tissue" 
 s:Sc/breast/OutputFile                = "Dose_breast"
@@ -24,7 +24,7 @@ d:Sc/breast/HistogramMin                   = 0 Gy
 d:Sc/breast/HistogramMax                   = 0.001 Gy
 b:Sc/breast/HistogramOutputAutoMax         = "True"
 
-s:Sc/colonrectum/Quantity                  = "TsMRCPScorer"
+s:Sc/colonrectum/Quantity                  = "TsTetGeomScorer"
 s:Sc/colonrectum/Component                 = "MRCPPhantom"
 sv:Sc/colonrectum/ICRPMaterials            = 16 "Ascending_colon_wall(0-280)" "Ascending_colon_wall(280-300)" "Ascending_colon_wall(300-surface)" "Transverse_colon_wall_right(0-280)" "Transverse_colon_wall_right(280-300)" "Transverse_colon_wall_right(300-surface)" "Transverse_colon_wall_left(0-280)" "Transverse_colon_wall_left(280-300)" "Transverse_colon_wall_left(300-surface)" "Descending_colon_wall(0-280)" "Descending_colon_wall(280-300)" "Descending_colon_wall(300-surface)" "Sigmoid_colon_wall(0-280)" "Sigmoid_colon_wall(280-300)" "Sigmoid_colon_wall(300-surface)" "Rectum_wall(0-280)" 
 s:Sc/colonrectum/OutputFile                = "Dose_colonrectum"
@@ -36,7 +36,7 @@ d:Sc/colonrectum/HistogramMin                   = 0 Gy
 d:Sc/colonrectum/HistogramMax                   = 0.001 Gy
 b:Sc/colonrectum/HistogramOutputAutoMax         = "True"
 
-s:Sc/esophagus/Quantity                  = "TsMRCPScorer"
+s:Sc/esophagus/Quantity                  = "TsTetGeomScorer"
 s:Sc/esophagus/Component                 = "MRCPPhantom"
 sv:Sc/esophagus/ICRPMaterials            = 3 "Oesophagus_wall(0-190)" "Oesophagus_wall(190-200)" "Oesophagus_wall(200-surface)" 
 s:Sc/esophagus/OutputFile                = "Dose_esophagus"
@@ -48,7 +48,7 @@ d:Sc/esophagus/HistogramMin                   = 0 Gy
 d:Sc/esophagus/HistogramMax                   = 0.001 Gy
 b:Sc/esophagus/HistogramOutputAutoMax         = "True"
 
-s:Sc/kidneys/Quantity                  = "TsMRCPScorer"
+s:Sc/kidneys/Quantity                  = "TsTetGeomScorer"
 s:Sc/kidneys/Component                 = "MRCPPhantom"
 sv:Sc/kidneys/ICRPMaterials            = 6 "Kidney_left_cortex" "Kidney_left_medulla" "Kidney_left_pelvis" "Kidney_right_cortex" "Kidney_right_medulla" "Kidney_right_pelvis" 
 s:Sc/kidneys/OutputFile                = "Dose_kidneys"
@@ -60,7 +60,7 @@ d:Sc/kidneys/HistogramMin                   = 0 Gy
 d:Sc/kidneys/HistogramMax                   = 0.001 Gy
 b:Sc/kidneys/HistogramOutputAutoMax         = "True"
 
-s:Sc/liver/Quantity                  = "TsMRCPScorer"
+s:Sc/liver/Quantity                  = "TsTetGeomScorer"
 s:Sc/liver/Component                 = "MRCPPhantom"
 sv:Sc/liver/ICRPMaterials            = 1 "Liver" 
 s:Sc/liver/OutputFile                = "Dose_liver"
@@ -72,7 +72,7 @@ d:Sc/liver/HistogramMin                   = 0 Gy
 d:Sc/liver/HistogramMax                   = 0.001 Gy
 b:Sc/liver/HistogramOutputAutoMax         = "True"
 
-s:Sc/lung/Quantity                  = "TsMRCPScorer"
+s:Sc/lung/Quantity                  = "TsTetGeomScorer"
 s:Sc/lung/Component                 = "MRCPPhantom"
 sv:Sc/lung/ICRPMaterials            = 2 "Lung(AI)_left" "Lung(AI)_right" 
 s:Sc/lung/OutputFile                = "Dose_lung"
@@ -84,7 +84,7 @@ d:Sc/lung/HistogramMin                   = 0 Gy
 d:Sc/lung/HistogramMax                   = 0.001 Gy
 b:Sc/lung/HistogramOutputAutoMax         = "True"
 
-s:Sc/lungbronchus/Quantity                  = "TsMRCPScorer"
+s:Sc/lungbronchus/Quantity                  = "TsTetGeomScorer"
 s:Sc/lungbronchus/Component                 = "MRCPPhantom"
 sv:Sc/lungbronchus/ICRPMaterials            = 3 "BB(10-35)" "BB(35-40)" "BB(40-50)" 
 s:Sc/lungbronchus/OutputFile                = "Dose_lungbronchus"
@@ -96,7 +96,7 @@ d:Sc/lungbronchus/HistogramMin                   = 0 Gy
 d:Sc/lungbronchus/HistogramMax                   = 0.001 Gy
 b:Sc/lungbronchus/HistogramOutputAutoMax         = "True"
 
-s:Sc/pancreas/Quantity                  = "TsMRCPScorer"
+s:Sc/pancreas/Quantity                  = "TsTetGeomScorer"
 s:Sc/pancreas/Component                 = "MRCPPhantom"
 sv:Sc/pancreas/ICRPMaterials            = 1 "Pancreas" 
 s:Sc/pancreas/OutputFile                = "Dose_pancreas"
@@ -108,7 +108,7 @@ d:Sc/pancreas/HistogramMin                   = 0 Gy
 d:Sc/pancreas/HistogramMax                   = 0.001 Gy
 b:Sc/pancreas/HistogramOutputAutoMax         = "True"
 
-s:Sc/pharynx/Quantity                  = "TsMRCPScorer"
+s:Sc/pharynx/Quantity                  = "TsTetGeomScorer"
 s:Sc/pharynx/Component                 = "MRCPPhantom"
 sv:Sc/pharynx/ICRPMaterials            = 1 "ET2(40-50)" 
 s:Sc/pharynx/OutputFile                = "Dose_pharynx"
@@ -120,7 +120,7 @@ d:Sc/pharynx/HistogramMin                   = 0 Gy
 d:Sc/pharynx/HistogramMax                   = 0.001 Gy
 b:Sc/pharynx/HistogramOutputAutoMax         = "True"
 
-s:Sc/prostateovary/Quantity                  = "TsMRCPScorer"
+s:Sc/prostateovary/Quantity                  = "TsTetGeomScorer"
 s:Sc/prostateovary/Component                 = "MRCPPhantom"
 sv:Sc/prostateovary/ICRPMaterials            = 3 "Ovary_left" "Ovary_right" "Prostate" 
 s:Sc/prostateovary/OutputFile                = "Dose_prostateovary"
@@ -132,7 +132,7 @@ d:Sc/prostateovary/HistogramMin                   = 0 Gy
 d:Sc/prostateovary/HistogramMax                   = 0.001 Gy
 b:Sc/prostateovary/HistogramOutputAutoMax         = "True"
 
-s:Sc/stomach/Quantity                  = "TsMRCPScorer"
+s:Sc/stomach/Quantity                  = "TsTetGeomScorer"
 s:Sc/stomach/Component                 = "MRCPPhantom"
 sv:Sc/stomach/ICRPMaterials            = 4 "Stomach_wall(0-60)" "Stomach_wall(60-100)" "Stomach_wall(100-300)" "Stomach_wall(300-surface)" 
 s:Sc/stomach/OutputFile                = "Dose_stomach"
@@ -144,7 +144,7 @@ d:Sc/stomach/HistogramMin                   = 0 Gy
 d:Sc/stomach/HistogramMax                   = 0.001 Gy
 b:Sc/stomach/HistogramOutputAutoMax         = "True"
 
-s:Sc/testesuterus/Quantity                  = "TsMRCPScorer"
+s:Sc/testesuterus/Quantity                  = "TsTetGeomScorer"
 s:Sc/testesuterus/Component                 = "MRCPPhantom"
 sv:Sc/testesuterus/ICRPMaterials            = 3 "Testis_left" "Testis_right" "Uterus" 
 s:Sc/testesuterus/OutputFile                = "Dose_testesuterus"
@@ -156,7 +156,7 @@ d:Sc/testesuterus/HistogramMin                   = 0 Gy
 d:Sc/testesuterus/HistogramMax                   = 0.001 Gy
 b:Sc/testesuterus/HistogramOutputAutoMax         = "True"
 
-s:Sc/thyroid/Quantity                  = "TsMRCPScorer"
+s:Sc/thyroid/Quantity                  = "TsTetGeomScorer"
 s:Sc/thyroid/Component                 = "MRCPPhantom"
 sv:Sc/thyroid/ICRPMaterials            = 1 "Thyroid" 
 s:Sc/thyroid/OutputFile                = "Dose_thyroid"
@@ -168,7 +168,7 @@ d:Sc/thyroid/HistogramMin                   = 0 Gy
 d:Sc/thyroid/HistogramMax                   = 0.001 Gy
 b:Sc/thyroid/HistogramOutputAutoMax         = "True"
 
-s:Sc/urinarybladder/Quantity                  = "TsMRCPScorer"
+s:Sc/urinarybladder/Quantity                  = "TsTetGeomScorer"
 s:Sc/urinarybladder/Component                 = "MRCPPhantom"
 sv:Sc/urinarybladder/ICRPMaterials            = 3 "Gall_bladder_wall" "Urinary_bladder_wall_insensitive" "Urinary_bladder_wall_sensitive(54-232)" 
 s:Sc/urinarybladder/OutputFile                = "Dose_urinarybladder"
