@@ -46,6 +46,17 @@ TsTetGeomScorer::TsTetGeomScorer(TsParameterManager* pM, TsMaterialManager* mM, 
         }
 	}
 
+    if ( fPm-> ParameterExists( GetFullParmNameLower( "OutcomeModelName" ) ) ) {
+		fOm = new TsOutcomeModelList(fPm, fScm->GetExtensionManager(), GetName(), fUnitName);
+		fReportOutcome = true;
+		if (fPm->ParameterExists(GetFullParmNameLower("OutcomeOutputScaleFactor")))
+			fNormFactor = fPm->GetUnitlessParameter(GetFullParmNameLower("OutcomeOutputScaleFactor"));
+	}
+
+    // If outcome modeling is requested, require one of the volume histogram reports
+    if (fReportOutcome && !fReportDVolHist && !fReportCVolHist){
+        fReportDVolHist = true;
+    }
 
     if (fPm->ParameterExists(GetFullParmName("HistogramAutoMax"))){
         fHistogramAutoMax = fPm->GetBooleanParameter(GetFullParmName("HistogramAutoMax"));
@@ -117,11 +128,11 @@ TsTetGeomScorer::TsTetGeomScorer(TsParameterManager* pM, TsMaterialManager* mM, 
         }
     }
 
-    G4String theUnitName = fPm->GetUnitOfParameter(GetFullParmName("HistogramMin"));
+    fUnitName = fPm->GetUnitOfParameter(GetFullParmName("HistogramMin"));
 	if (fReportCVolHist || fReportDVolHist) {
 		fHistogramNBins = fPm->GetIntegerParameter(GetFullParmName("HistogramBins"));
-		fHistogramMin = fPm->GetDoubleParameter(GetFullParmName("HistogramMin"), fPm->GetUnitCategory(theUnitName)) / GetUnitValue();
-		fHistogramMax = fPm->GetDoubleParameter(GetFullParmName("HistogramMax"), fPm->GetUnitCategory(theUnitName)) / GetUnitValue();
+		fHistogramMin = fPm->GetDoubleParameter(GetFullParmName("HistogramMin"), fPm->GetUnitCategory(fUnitName)) / GetUnitValue();
+		fHistogramMax = fPm->GetDoubleParameter(GetFullParmName("HistogramMax"), fPm->GetUnitCategory(fUnitName)) / GetUnitValue();
 		G4double binWidth = ( fHistogramMax - fHistogramMin ) / fHistogramNBins;
 		for (G4int i=0; i < fHistogramNBins; i++)
 			fHistogramLowerValues.push_back(fHistogramMin + i * binWidth);
@@ -450,6 +461,25 @@ void TsTetGeomScorer::Output() {
             fPm->AbortSession(1);
         }
     }
+
+
+    if ( fReportOutcome ) {
+        G4String modelSource;
+        std::vector<G4double> volume;
+
+        modelSource = "DVH";
+        for ( int i = 0; i < fHistogramNBins; i++ ) {
+            volume.push_back( fVolumeHistogramVolumes[i] );
+            fHistogramLowerValues[i] *= fNormFactor;
+        }
+        G4bool isDifVolHist = (fReportDVolHist && !fReportCVolHist);
+        fProbOfOutcome = fOm->CalculateOutcome(fHistogramLowerValues, volume, isDifVolHist);
+        modelSource += " in component " + fComponent->GetName();
+
+        fOm->Print(modelSource);
+    }
+
+
 
     G4cout << "End of TsTetGeomScorer output for Scorer: " << GetName() << G4endl;
 }
