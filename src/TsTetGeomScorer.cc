@@ -16,6 +16,7 @@ TsTetGeomScorer::TsTetGeomScorer(TsParameterManager* pM, TsMaterialManager* mM, 
 		: TsVBinnedScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer), fEmCalculator(), fUseMaterialFilter(false), fReportDoseByTet(false), fNUsedVolumes(0), fTotalVolume(0.0), fHistogramAutoMax(true), fRestoreResultsFromFile(false)
 {
 	SetUnit("Gy");
+    fUnitName = fPm->GetUnitOfParameter(GetFullParmName("HistogramMin"));
 
 	G4String scoringMaterial = "G4_WATER";
 	if (!fPm->ParameterExists(GetFullParmName("Material")))
@@ -128,7 +129,6 @@ TsTetGeomScorer::TsTetGeomScorer(TsParameterManager* pM, TsMaterialManager* mM, 
         }
     }
 
-    fUnitName = fPm->GetUnitOfParameter(GetFullParmName("HistogramMin"));
 	if (fReportCVolHist || fReportDVolHist) {
 		fHistogramNBins = fPm->GetIntegerParameter(GetFullParmName("HistogramBins"));
 		fHistogramMin = fPm->GetDoubleParameter(GetFullParmName("HistogramMin"), fPm->GetUnitCategory(fUnitName)) / GetUnitValue();
