@@ -10,9 +10,9 @@ Largely based on the [Geant4 example](https://github.com/Geant4/geant4/tree/dd1f
 
 
 Authors:
- - [Isaac Meyer](imeyer@mgh.harvard.edu)
- - [Alejandro Bertolet](abertoletreina@mgh.harvard.edu)
- - [Dohyeon Yoo](dhyoo@yuhs.ac)
+ - Isaac Meyer
+ - Alejandro Bertolet
+ - Dohyeon Yoo
 
 # Loading mesh geometries
 Currently only the .ele/.node/.material format of tetrahedral meshes is supported where the file formats of ICRP 145 are followed.
