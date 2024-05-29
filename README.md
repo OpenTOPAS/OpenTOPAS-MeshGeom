@@ -33,3 +33,6 @@ s:Ge/TetGeom/EleFile          = "my_mesh.ele"
 # Scoring
 A specific class of scorer is needed for MRCP phantoms by specifying (*Quantity="TsTetGeom"*). By default, dose to water is computed, but other material can be used to calculate the dose by using the parameter *Material*.
 For each organ involved it is necessary to add a new scorer, specifying the list parameter *Organ=1 "Name"*, where *Name* should be one (or more) of the materials listed in the .material file of the MRCP phantom, e.g., "Liver" or "Stomach_contents". This will restrict the dose considered only to the organ(s) of interest.
+
+# Version
+Tested for OpenTOPAS v4.0.0 and Geant4 v11.1.2
