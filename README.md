@@ -1,7 +1,7 @@
 # Tetrahedral Mesh Geometry Capabilities for OpenTOPAS
 
 <p align="center">
-  <a href="https://github.com/mghro/TOPAS-MeshGeom"><img alt="Adult Female ICRP 145 mesh head" src="https://github.com/mghro/TOPAS-MeshGeom/assets/34250777/18f99b31-6d5e-4f20-bf08-f3111a0a99f6" width="40%"></a>
+  <a href="https://github.com/OpenTOPAS/OpenTOPAS-MeshGeom"><img alt="Adult Female ICRP 145 mesh head" src="https://github.com/user-attachments/assets/bc9915b4-af8e-4c51-8fd3-bd92adaf685f" width="40%"></a>
   <p align="center"></p>
 </p>
 
